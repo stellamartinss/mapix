@@ -23,9 +23,23 @@ export const haversineDistance = (from, to) => {
   return R * c
 }
 
+/**
+ * Calcula pontuação baseada na distância (Modo Clássico)
+ * Nova fórmula: max(0, 5000 - (distância_km ^ 0.9))
+ * - Pontuação máxima: 5000 pontos (distância = 0)
+ * - Quanto maior a distância, menor a pontuação
+ * - Mais generosa em longas distâncias comparado à fórmula exponencial
+ * 
+ * Exemplos:
+ * - 0 km    → 5000 pontos
+ * - 100 km  → 4900 pontos
+ * - 1000 km → 4000 pontos
+ * - 5000 km → 500 pontos
+ */
 export const calculateScore = (distanceKm) => {
   const maxScore = 5000
-  const decay = 0.0015
-  return Math.round(maxScore * Math.exp(-decay * distanceKm))
+  // Nova fórmula: max(0, 5000 - (distância_km ^ 0.9))
+  const score = maxScore - Math.pow(distanceKm, 0.9)
+  return Math.max(0, Math.round(score)) // Garante que nunca seja negativo
 }
 
