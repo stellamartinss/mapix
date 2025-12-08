@@ -6,9 +6,8 @@
 - Estado centralizado em App.jsx (posição real, palpite, distância, loading).
 
 ## Como rodar
-- Copie a key do Google Maps: cp env.example .env e preencha VITE_GOOGLE_MAPS_API_KEY.
-- Instale deps (já adicionei @react-google-maps/api e prop-types): npm install.
-- Suba o dev server: npm run dev.
+- npm install.
+- npm run dev.
 
 ## Uso
 - Ao abrir, a app escolhe um ponto aleatório com Street View (tenta até 25 vezes; se faltar cobertura, usa o último sorteio).
