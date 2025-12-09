@@ -5,7 +5,7 @@ function StartScreen({ onStart, isBlocked, attemptsLeft }) {
     <div className="start-screen">
       <div className="start-screen-content">
         <div className="start-screen-icon">🗺️</div>
-        <h2>Bem-vindo ao Mini GeoGuessr!</h2>
+        <h2>Bem-vindo ao Mapix!</h2>
         <p className="start-screen-description">
           Teste seus conhecimentos geográficos! Você verá um local aleatório do mundo no Street View
           e precisará adivinhar onde ele está no mapa.

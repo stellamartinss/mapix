@@ -3,7 +3,7 @@ import { useEffect, useRef } from 'react'
 
 const containerStyle = {
   width: '100%',
-  height: '400px',
+  height: '100vh',
   borderRadius: '12px',
   overflow: 'hidden',
 }

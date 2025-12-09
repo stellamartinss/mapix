@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
 
-function Result({ distanceKm, score, disableConfirm, onConfirm, onPlayAgain }) {
+function Result({ distanceKm, score, disableConfirm, onConfirm, onPlayAgain, handleHideToggle }) {
   return (
     <div className="result-row">
       <button type="button" onClick={onConfirm} disabled={disableConfirm}>
@@ -8,7 +8,7 @@ function Result({ distanceKm, score, disableConfirm, onConfirm, onPlayAgain }) {
       </button>
       <div className="result-text">
         {distanceKm === null ? (
-          <p>Faça um palpite e confirme para ver a distância.</p>
+          <></>
         ) : (
           <p>
             Distância entre os pontos: <strong>{distanceKm.toFixed(2)} km</strong> ·
@@ -17,9 +17,12 @@ function Result({ distanceKm, score, disableConfirm, onConfirm, onPlayAgain }) {
           </p>
         )}
       </div>
-      <button className="ghost" type="button" onClick={onPlayAgain}>
+      {/* <button className="ghost" type="button" onClick={onPlayAgain}>
         Jogar novamente
-      </button>
+      </button> */}
+      <div className="ghost" type="button" onClick={handleHideToggle}>
+        hide
+      </div>
     </div>
   )
 }

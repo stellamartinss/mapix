@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types'
-import { haversineDistance } from '../utils/geo'
+import { haversineDistance } from '../../utils/geo'
 
 function BetModeResults({ players, realPosition, playerGuesses, onPlayAgain }) {
   // Calcular distâncias e ordenar jogadores

@@ -33,7 +33,7 @@ function BetGuessMap({
   if (currentPlayerGuess && !showResults) {
     markers.push({
       position: currentPlayerGuess,
-      label: '?',
+      label: '💡',
       key: 'current',
     })
   }

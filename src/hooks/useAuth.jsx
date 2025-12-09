@@ -22,29 +22,6 @@ export function AuthProvider({ children }) {
   const checkAuth = async () => {
     try {
       const token = localStorage.getItem('token')
-      if (!token) {
-        // Modo offline/demo - permitir jogar sem autenticação
-        setUser({ id: 'demo', email: 'demo@example.com' })
-        setIsPremium(false)
-        // Simular tentativas restantes (3 por padrão em modo demo)
-        const storedAttempts = localStorage.getItem('demo_attempts_left')
-        const attemptsDate = localStorage.getItem('demo_attempts_date')
-        const today = new Date().toISOString().split('T')[0]
-        
-        if (attemptsDate !== today) {
-          // Novo dia, resetar tentativas
-          localStorage.setItem('demo_attempts_left', '3')
-          localStorage.setItem('demo_attempts_date', today)
-          setAttemptsLeft(3)
-          setIsBlocked(false)
-        } else {
-          const attempts = parseInt(storedAttempts || '3', 10)
-          setAttemptsLeft(attempts)
-          setIsBlocked(attempts <= 0)
-        }
-        setLoading(false)
-        return
-      }
 
       const response = await fetch(`${API_URL}/auth/me`, {
         headers: {
@@ -108,13 +85,11 @@ export function AuthProvider({ children }) {
   }
 
   const useAttempt = async () => {
-    // Se for premium, não precisa consumir tentativa
-    if (isPremium) {
+    if (user?.subscription_tier === 'premium' && user?.subscription_status === 'active') {
       return { success: true, attemptsLeft: null }
     }
 
-    // Modo demo - usar localStorage
-    if (user?.id === 'demo') {
+    if (user?.subscription_tier === 'free') {
       const attempts = parseInt(localStorage.getItem('demo_attempts_left') || '3', 10)
       if (attempts <= 0) {
         setIsBlocked(true)
