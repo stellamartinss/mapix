@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import GuessHistory from '../components/GuessHistory';
+import LastGuesses from '../components/LastGuesses';
 import GuessMap from '../components/GuessMap';
 import Result from '../components/Result';
 import StreetView from '../components/StreetView';
@@ -27,10 +27,11 @@ const BET_STATES = {
   RESULTS: 'results',
 };
 
+
 export default function GamePage() {
   const navigate = useNavigate();
   const [mode, setMode] = useState(MODES.CLASSIC);
-  const [isHidden, setIsHidden] = useState(false);
+  const [isHidden, setIsHidden] = useState(true);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
 
   const {
@@ -216,9 +217,10 @@ export default function GamePage() {
     pickRandomStreetView();
   }, [pickRandomStreetView, mode]);
 
-  const handleHideToggle = useCallback(() => {
+  const handleHideToggle = () => {
     setIsHidden((prev) => !prev);
-  }, []);
+    console.log('toggled hide', isHidden);
+  };
 
   const linePath = useMemo(() => {
     if (!realPosition || !guessPosition || distanceKm === null) return [];
@@ -294,221 +296,249 @@ export default function GamePage() {
     betPlayers.length > 0 && betPlayers.every((p) => allBetGuesses[p.id]);
 
   return (
-    <>
-      <header className='header'>
-        <div>
-          <p className='eyebrow'>Mapix</p>
-          <h1>Encontre onde o Street View está</h1>
-        </div>
-        <div className='header-actions'>
-          {mode === MODES.CLASSIC && !isPremium && <AttemptsCounter />}
-          {isPremium && <PremiumBadge />}
-          {/* <DarkModeToggle /> */}
-          <ModeSelector currentMode={mode} onModeChange={handleModeChange} />
-          {mode === MODES.CLASSIC && realPosition && (
+    <div class='min-h-screen grid place-items-center p-6'>
+      <div style={{ position: 'absolute', top: '24px', right: '24px' }}>
+        <DarkModeToggle />
+      </div>
+      <div className='w-full flex flex-col gap-8'>
+        {/* HEADER */}
+        <header className='flex md:flex-row flex-col md:items-center items-start justify-between gap-6'>
+          <div>
+            <p className='uppercase tracking-wide text-xs text-slate-300 m-0 mb-1'>
+              Mapix
+            </p>
+            <h1 className='m-0 text-3xl font-bold text-slate-900 dark:text-white'>
+              Encontre onde o Street View está
+            </h1>
+          </div>
+
+          <div className='flex md:flex-row flex-col items-center gap-3 md:w-auto w-full'>
+            {mode === MODES.CLASSIC && !isPremium && <AttemptsCounter />}
+            {isPremium && <PremiumBadge />}
+
+            <ModeSelector currentMode={mode} onModeChange={handleModeChange} />
+
+            {mode === MODES.CLASSIC && realPosition && (
+              <button
+                className='bg-white/20 text-white border border-white/30 rounded-lg px-4 py-3 font-semibold transition-all hover:bg-white/30 disabled:opacity-50'
+                type='button'
+                onClick={handlePlayAgain}
+                disabled={loading || isBlocked}
+              >
+                Jogar novamente
+              </button>
+            )}
+
             <button
-              className='ghost'
+              className='bg-red-500 text-white rounded-lg px-4 py-3 font-semibold transition-all hover:bg-red-600'
               type='button'
-              onClick={handlePlayAgain}
-              disabled={loading || isBlocked}
+              onClick={handleLogout}
             >
-              Jogar novamente
+              Sair
             </button>
-          )}
-          <button className='ghost' type='button' onClick={handleLogout}>
-            Sair
-          </button>
+          </div>
+        </header>
+
+        {/* HISTÓRICO */}
+        <div className='w-full'>
+          <LastGuesses history={history} />
         </div>
-      </header>
 
-      {showUpgradeModal && (
-        <UpgradeModal
-          onClose={() => setShowUpgradeModal(false)}
-          onUpgrade={async () => {
-            const result = await upgrade();
-            if (result.success && result.checkoutUrl) {
-              window.location.href = result.checkoutUrl;
-            }
-          }}
-        />
-      )}
-
-      <section className='panel'>
-        {!realPosition && !loading ? (
-          <StartScreen
-            onStart={handleStartGame}
-            isBlocked={isBlocked}
-            attemptsLeft={attemptsLeft}
+        {/* MODAL PREMIUM */}
+        {/* {showUpgradeModal && (
+          <UpgradeModal
+            onClose={() => setShowUpgradeModal(false)}
+            onUpgrade={async () => {
+              const result = await upgrade();
+              if (result.success && result.checkoutUrl) {
+                window.location.href = result.checkoutUrl;
+              }
+            }}
           />
-        ) : (
-          <StreetView position={realPosition} loading={loading} />
-        )}
-      </section>
+        )} */}
 
-      <button onClick={handleHideToggle}>Mostrar mapa de palpites</button>
-
-      {mode === MODES.CLASSIC && realPosition && (
-        <>            
-          <section
-            className='panel'
-            style={{ position: 'fixed', bottom: '0', right: '24px', display: isHidden ? 'none' : 'block' }}
-          >
-            <Result
-              distanceKm={distanceKm}
-              score={lastScore}
-              disableConfirm={!guessPosition || loading}
-              onConfirm={handleGuess}
-              onPlayAgain={handlePlayAgain}
-              onHideToggle={handleHideToggle}
+        {/* STREET VIEW / START */}
+        <section className='bg-white/10 p-6 flex flex-col gap-3'>
+          {!realPosition && !loading ? (
+            <StartScreen
+              onStart={handleStartGame}
+              isBlocked={isBlocked}
+              attemptsLeft={attemptsLeft}
             />
-            <GuessMap
-              guessPosition={guessPosition}
-              realPosition={realPosition}
-              showResult={distanceKm !== null}
-              linePath={linePath}
-              onGuess={setGuessPosition}
-            />
-          </section>
-
-          <section className='panel'>
-            <div className='panel-header'>
-              <h2>Últimos palpites</h2>
-              <p className='hint'>Mostrando os 5 mais recentes</p>
-            </div>
-            <GuessHistory entries={history.slice(0, 5)} />
-          </section>
-        </>
-      )}
-
-      {mode === MODES.BET && (
-        <>
-          {betState === BET_STATES.SETUP && (
-            <section className='panel'>
-              <BetModeSetup
-                onStartGame={handleBetModeStart}
-                onCancel={handleBetModeCancel}
-              />
-            </section>
+          ) : (
+            <StreetView position={realPosition} loading={loading} />
           )}
+        </section>
 
-          {betState === BET_STATES.PLAYING && (
-            <>
-              <section className='panel'>
-                <div className='bet-game'>
-                  <div className='bet-game-status'>
-                    <h3>
-                      {allBetPlayersGuessed
-                        ? 'Todos fizeram seus palpites!'
-                        : `${
-                            currentBetPlayer?.name || ''
-                          } está fazendo seu palpite`}
-                    </h3>
-                    <div className='players-progress'>
-                      {betPlayers.map((player, index) => {
-                        const hasGuessed = !!allBetGuesses[player.id];
-                        const isCurrent =
-                          index === currentBetPlayerIndex &&
-                          !allBetPlayersGuessed;
-                        return (
-                          <div
-                            key={player.id}
-                            className={`player-progress-item ${
-                              hasGuessed ? 'done' : ''
-                            } ${isCurrent ? 'current' : ''}`}
+        {/* CLASSIC MODE */}
+        {mode === MODES.CLASSIC && realPosition && (
+          <div className='w-full flex justify-center'>
+            {isHidden ? (
+              <section className='bg-white/10 border border-white/20 rounded-2xl p-6 shadow-xl flex flex-col gap-4 w-full'>
+                <Result
+                  distanceKm={distanceKm}
+                  score={lastScore}
+                  disableConfirm={!guessPosition || loading}
+                  onConfirm={handleGuess}
+                  onPlayAgain={handlePlayAgain}
+                  onHideToggle={handleHideToggle}
+                />
+                <GuessMap
+                  guessPosition={guessPosition}
+                  realPosition={realPosition}
+                  showResult={distanceKm !== null}
+                  linePath={linePath}
+                  onGuess={setGuessPosition}
+                />
+              </section>
+            ) : (
+              <section className='w-full flex justify-center'>
+                <button
+                  onClick={handleHideToggle}
+                  className='border border-white/30 bg-white/20 text-white rounded-lg px-4 py-3 font-semibold transition-all hover:bg-white/30 hover:shadow-xl'
+                >
+                  <p>Mostrar mapa e dar palpite</p>
+                  <div className='text-6xl'>🗺️</div>
+                </button>
+              </section>
+            )}
+          </div>
+        )}
+
+        {/* BET MODE */}
+        {mode === MODES.BET && (
+          <>
+            {betState === BET_STATES.SETUP && (
+              <section className='bg-white/10 border border-white/20 rounded-2xl p-6 shadow-xl flex flex-col gap-4'>
+                <BetModeSetup
+                  onStartGame={handleBetModeStart}
+                  onCancel={handleBetModeCancel}
+                />
+              </section>
+            )}
+
+            {betState === BET_STATES.PLAYING && (
+              <>
+                <section className='panel'>
+                  <div className='bet-game'>
+                    <div className='bet-game-status'>
+                      <h3>
+                        {allBetPlayersGuessed
+                          ? 'Todos fizeram seus palpites!'
+                          : `${
+                              currentBetPlayer?.name || ''
+                            } está fazendo seu palpite`}
+                      </h3>
+                      <div className='players-progress'>
+                        {betPlayers.map((player, index) => {
+                          const hasGuessed = !!allBetGuesses[player.id];
+                          const isCurrent =
+                            index === currentBetPlayerIndex &&
+                            !allBetPlayersGuessed;
+                          return (
+                            <div
+                              key={player.id}
+                              className={`player-progress-item ${
+                                hasGuessed ? 'done' : ''
+                              } ${isCurrent ? 'current' : ''}`}
+                            >
+                              <span className='player-progress-name'>
+                                {player.name}
+                              </span>
+                              <span className='player-progress-bet'>
+                                R$ {player.bet}
+                              </span>
+                              {hasGuessed && (
+                                <span className='checkmark'>✓</span>
+                              )}
+                              {isCurrent && !hasGuessed && (
+                                <span className='current-indicator'>→</span>
+                              )}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                    {!allBetPlayersGuessed && currentBetPlayer && (
+                      <div className='bet-game-actions'>
+                        <p className='hint'>
+                          É a vez de <strong>{currentBetPlayer.name}</strong>.
+                          Faça seu palpite no mapa abaixo.
+                        </p>
+                      </div>
+                    )}
+                    {currentPlayerGuess &&
+                      currentBetPlayer &&
+                      !allBetPlayersGuessed && (
+                        <div className='bet-game-actions'>
+                          <button
+                            type='button'
+                            className='primary'
+                            onClick={handleBetNextPlayer}
                           >
-                            <span className='player-progress-name'>
-                              {player.name}
-                            </span>
-                            <span className='player-progress-bet'>
-                              R$ {player.bet}
-                            </span>
-                            {hasGuessed && <span className='checkmark'>✓</span>}
-                            {isCurrent && !hasGuessed && (
-                              <span className='current-indicator'>→</span>
-                            )}
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-                  {!allBetPlayersGuessed && currentBetPlayer && (
-                    <div className='bet-game-actions'>
-                      <p className='hint'>
-                        É a vez de <strong>{currentBetPlayer.name}</strong>.
-                        Faça seu palpite no mapa abaixo.
-                      </p>
-                    </div>
-                  )}
-                  {currentPlayerGuess &&
-                    currentBetPlayer &&
-                    !allBetPlayersGuessed && (
+                            {currentBetPlayerIndex < betPlayers.length - 1
+                              ? 'Próximo Jogador'
+                              : 'Ver Resultados'}
+                          </button>
+                        </div>
+                      )}
+                    {allBetPlayersGuessed && (
                       <div className='bet-game-actions'>
                         <button
                           type='button'
                           className='primary'
-                          onClick={handleBetNextPlayer}
+                          onClick={handleBetRoundComplete}
                         >
-                          {currentBetPlayerIndex < betPlayers.length - 1
-                            ? 'Próximo Jogador'
-                            : 'Ver Resultados'}
+                          Ver Resultados
                         </button>
                       </div>
                     )}
-                  {allBetPlayersGuessed && (
-                    <div className='bet-game-actions'>
-                      <button
-                        type='button'
-                        className='primary'
-                        onClick={handleBetRoundComplete}
-                      >
-                        Ver Resultados
-                      </button>
-                    </div>
-                  )}
-                </div>
-              </section>
-              <section className='panel'>
-                <BetGuessMap
-                  currentPlayerGuess={currentPlayerGuess}
-                  allPlayerGuesses={allBetGuesses}
-                  players={betPlayers}
-                  realPosition={null}
-                  showResults={false}
-                  allowGuess={
-                    !allBetPlayersGuessed &&
-                    currentBetPlayer &&
-                    !allBetGuesses[currentBetPlayer.id]
-                  }
-                  onGuess={handleBetGuess}
-                />
-              </section>
-            </>
-          )}
+                  </div>
+                </section>
+                <section className='bg-white/10 border border-white/20 rounded-2xl p-6 shadow-xl flex flex-col gap-4'>
+                  <BetGuessMap
+                    currentPlayerGuess={currentPlayerGuess}
+                    allPlayerGuesses={allBetGuesses}
+                    players={betPlayers}
+                    realPosition={null}
+                    showResults={false}
+                    allowGuess={
+                      !allBetPlayersGuessed &&
+                      currentBetPlayer &&
+                      !allBetGuesses[currentBetPlayer.id]
+                    }
+                    onGuess={handleBetGuess}
+                  />
+                </section>
+              </>
+            )}
 
-          {betState === BET_STATES.RESULTS && (
-            <>
-              <section className='panel'>
-                <BetGuessMap
-                  currentPlayerGuess={null}
-                  allPlayerGuesses={allBetGuesses}
-                  players={betPlayers}
-                  realPosition={realPosition}
-                  showResults={true}
-                  onGuess={() => {}}
-                />
-              </section>
-              <section className='panel'>
-                <BetModeResults
-                  players={betPlayers}
-                  realPosition={realPosition}
-                  playerGuesses={allBetGuesses}
-                  onPlayAgain={handlePlayAgain}
-                />
-              </section>
-            </>
-          )}
-        </>
-      )}
-    </>
+            {betState === BET_STATES.RESULTS && (
+              <>
+                <section className='bg-white/10 border border-white/20 rounded-2xl p-6 shadow-xl flex flex-col gap-4'>
+                  <BetGuessMap
+                    currentPlayerGuess={null}
+                    allPlayerGuesses={allBetGuesses}
+                    players={betPlayers}
+                    realPosition={realPosition}
+                    showResults={true}
+                    onGuess={() => {}}
+                  />
+                </section>
+
+                <section className='bg-white/10 border border-white/20 rounded-2xl p-6 shadow-xl flex flex-col gap-4'>
+                  <BetModeResults
+                    players={betPlayers}
+                    realPosition={realPosition}
+                    playerGuesses={allBetGuesses}
+                    onPlayAgain={handlePlayAgain}
+                  />
+                </section>
+              </>
+            )}
+          </>
+        )}
+      </div>
+    </div>
   );
 }

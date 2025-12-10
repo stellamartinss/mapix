@@ -13,12 +13,14 @@ function App() {
 
   if (!apiKey) {
     return (
-      <div className='app app--centered'>
-        <h1>Mapix</h1>
-        <p>
-          Adicione sua chave do Google Maps em um arquivo <code>.env</code> com:{' '}
-          <code>VITE_GOOGLE_MAPS_API_KEY=</code>
-        </p>
+      <div className='min-h-screen grid place-items-center text-center p-6'>
+        <div>
+          <h1 className='text-3xl font-bold mb-4'>Mapix</h1>
+          <p className='text-slate-600 dark:text-slate-400'>
+            Adicione sua chave do Google Maps em um arquivo <code className='bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded'>.env</code> com:{' '}
+            <code className='bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded'>VITE_GOOGLE_MAPS_API_KEY=</code>
+          </p>
+        </div>
       </div>
     );
   }
@@ -30,7 +32,7 @@ function App() {
           googleMapsApiKey={apiKey}
           libraries={libraries}
         >
-          <div className='app'>
+          <div className='max-w-none mx-auto py-8 px-6 pb-12 flex flex-col gap-4'>
             <Routes>
               <Route path="/login" element={<LoginPage />} />
               <Route

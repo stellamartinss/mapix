@@ -10,14 +10,18 @@ function AttemptsCounter() {
   if (attemptsLeft === null) return null
 
   return (
-    <div className={`attempts-counter ${isBlocked ? 'blocked' : ''}`}>
-      <span className="attempts-icon">🎯</span>
-      <span className="attempts-text">
+    <div className={`flex items-center gap-2 px-3.5 py-2 rounded-full border-2 text-sm transition-all ${
+      isBlocked
+        ? 'bg-red-50 dark:bg-red-950 border-red-200 dark:border-red-900 text-red-600 dark:text-red-400'
+        : 'bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'
+    }`}>
+      <span className="text-base">🎯</span>
+      <span className="font-medium">
         {isBlocked ? (
-          <strong>Sem tentativas restantes</strong>
+          <strong className="text-red-600 dark:text-red-400">Sem tentativas restantes</strong>
         ) : (
           <>
-            <strong>{attemptsLeft}</strong> tentativa{attemptsLeft !== 1 ? 's' : ''} restante{attemptsLeft !== 1 ? 's' : ''} hoje
+            <strong className="text-slate-900 dark:text-slate-100 font-bold">{attemptsLeft}</strong> tentativa{attemptsLeft !== 1 ? 's' : ''} restante{attemptsLeft !== 1 ? 's' : ''} hoje
           </>
         )}
       </span>

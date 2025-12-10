@@ -1,19 +1,12 @@
-import PropTypes from 'prop-types'
-import { useEffect, useRef } from 'react'
-
-const containerStyle = {
-  width: '100%',
-  height: '100vh',
-  borderRadius: '12px',
-  overflow: 'hidden',
-}
+import PropTypes from 'prop-types';
+import { useEffect, useRef } from 'react';
 
 function StreetView({ position, loading }) {
-  const containerRef = useRef(null)
-  const panoramaRef = useRef(null)
+  const containerRef = useRef(null);
+  const panoramaRef = useRef(null);
 
   useEffect(() => {
-    if (!window.google || !containerRef.current || !position) return
+    if (!window.google || !containerRef.current || !position) return;
 
     if (!panoramaRef.current) {
       panoramaRef.current = new window.google.maps.StreetViewPanorama(
@@ -25,29 +18,40 @@ function StreetView({ position, loading }) {
           panControl: true,
           linksControl: true,
           motionTracking: false,
-        },
-      )
+        }
+      );
     } else {
-      panoramaRef.current.setPosition(position)
+      panoramaRef.current.setPosition(position);
     }
 
     return () => {
       // clean up the panorama instance on unmount
-      panoramaRef.current = null
-    }
-  }, [position])
+      panoramaRef.current = null;
+    };
+  }, [position]);
 
   if (loading) {
-    return <div className="placeholder">Gerando um ponto aleatório...</div>
+    return (
+      <div className='h-[400px] rounded-xl bg-gradient-to-br from-indigo-50 to-slate-100 dark:from-slate-800 dark:to-slate-900 grid place-items-center text-slate-600 dark:text-slate-400 text-center'>
+        Gerando um ponto aleatório...
+      </div>
+    );
   }
 
   if (!position) {
     return (
-      <div className="placeholder">Carregando Street View. Aguarde um instante.</div>
-    )
+      <div className='h-[400px] rounded-xl bg-gradient-to-br from-indigo-50 to-slate-100 dark:from-slate-800 dark:to-slate-900 grid place-items-center text-slate-600 dark:text-slate-400 text-center'>
+        Carregando Street View. Aguarde um instante.
+      </div>
+    );
   }
 
-  return <div style={containerStyle} ref={containerRef} />
+  return (
+    <div
+      className='w-full h-screen rounded-xl overflow-hidden'
+      ref={containerRef}
+    />
+  );
 }
 
 StreetView.propTypes = {
@@ -56,7 +60,6 @@ StreetView.propTypes = {
     lng: PropTypes.number.isRequired,
   }),
   loading: PropTypes.bool,
-}
+};
 
-export default StreetView
-
+export default StreetView;
