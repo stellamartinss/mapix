@@ -11,6 +11,7 @@ export function AuthProvider({ children }) {
   const [attemptsLeft, setAttemptsLeft] = useState(null)
   const [isBlocked, setIsBlocked] = useState(false)
   const [loading, setLoading] = useState(true)
+  const [isGuest, setIsGuest] = useState(false)
 
   useEffect(() => {
     checkAuth()
@@ -22,6 +23,18 @@ export function AuthProvider({ children }) {
   const checkAuth = async () => {
     try {
       const token = localStorage.getItem('token')
+      
+      // Se não houver token, configurar modo convidado
+      if (!token) {
+        setUser(null)
+        setIsPremium(false)
+        setIsGuest(true)
+        const guestAttempts = parseInt(localStorage.getItem('guest_attempts') || '3', 10)
+        setAttemptsLeft(guestAttempts)
+        setIsBlocked(guestAttempts <= 0)
+        setLoading(false)
+        return
+      }
 
       const response = await fetch(`${API_URL}/auth/me`, {
         headers: {
@@ -35,20 +48,26 @@ export function AuthProvider({ children }) {
         setIsPremium(data.isPremium || false)
         setAttemptsLeft(data.attemptsLeft)
         setIsBlocked(data.isBlocked || false)
+        setIsGuest(false)
       } else {
-        // Token inválido, limpar
+        // Token inválido, limpar e configurar modo convidado
         localStorage.removeItem('token')
         setUser(null)
         setIsPremium(false)
+        setIsGuest(true)
+        const guestAttempts = parseInt(localStorage.getItem('guest_attempts') || '3', 10)
+        setAttemptsLeft(guestAttempts)
+        setIsBlocked(guestAttempts <= 0)
       }
     } catch (error) {
       console.error('Auth check failed:', error)
-      // Em caso de erro, permitir modo demo
-      setUser({ id: 'demo', email: 'demo@example.com' })
+      // Em caso de erro, configurar modo convidado
+      setUser(null)
       setIsPremium(false)
-      const attempts = parseInt(localStorage.getItem('demo_attempts_left') || '3', 10)
-      setAttemptsLeft(attempts)
-      setIsBlocked(attempts <= 0)
+      setIsGuest(true)
+      const guestAttempts = parseInt(localStorage.getItem('guest_attempts') || '3', 10)
+      setAttemptsLeft(guestAttempts)
+      setIsBlocked(guestAttempts <= 0)
     } finally {
       setLoading(false)
     }
@@ -80,11 +99,29 @@ export function AuthProvider({ children }) {
     localStorage.removeItem('token')
     setUser(null)
     setIsPremium(false)
-    setAttemptsLeft(null)
-    setIsBlocked(false)
+    setIsGuest(true)
+    const guestAttempts = parseInt(localStorage.getItem('guest_attempts') || '3', 10)
+    setAttemptsLeft(guestAttempts)
+    setIsBlocked(guestAttempts <= 0)
   }
 
   const useAttempt = async () => {
+    // Modo convidado (não autenticado)
+    if (isGuest || !user) {
+      const guestAttempts = parseInt(localStorage.getItem('guest_attempts') || '3', 10)
+      if (guestAttempts <= 0) {
+        setIsBlocked(true)
+        return { success: false, blocked: true, requiresAuth: true }
+      }
+
+      const newAttempts = guestAttempts - 1
+      localStorage.setItem('guest_attempts', newAttempts.toString())
+      setAttemptsLeft(newAttempts)
+      setIsBlocked(newAttempts <= 0)
+
+      return { success: true, attemptsLeft: newAttempts, isGuest: true }
+    }
+
     if (user?.subscription_tier === 'premium' && user?.subscription_status === 'active') {
       return { success: true, attemptsLeft: null }
     }
@@ -170,6 +207,7 @@ export function AuthProvider({ children }) {
         attemptsLeft,
         isBlocked,
         loading,
+        isGuest,
         login,
         logout,
         useAttempt,

@@ -69,19 +69,19 @@ export default function GamePage() {
   const pickRandomStreetView = useCallback(async () => {
     if (!window.google) return;
 
-    // if (mode === MODES.CLASSIC && !isPremium) {
-    //   try {
-    //     const attemptResult = await attemptFunction();
-    //     if (!attemptResult.success || attemptResult.blocked) {
-    //       setShowUpgradeModal(true);
-    //       return;
-    //     }
-    //   } catch (error) {
-    //     console.error('Failed to use attempt:', error);
-    //     setShowUpgradeModal(true);
-    //     return;
-    //   }
-    // }
+    if (mode === MODES.CLASSIC && !isPremium) {
+      try {
+        const attemptResult = await attemptFunction();
+        if (!attemptResult.success || attemptResult.blocked) {
+          setShowUpgradeModal(true);
+          return;
+        }
+      } catch (error) {
+        console.error('Failed to use attempt:', error);
+        setShowUpgradeModal(true);
+        return;
+      }
+    }
 
     setLoading(true);
     setGuessPosition(null);
@@ -425,7 +425,7 @@ export default function GamePage() {
                   onClick={handleHideToggle}
                   className='bg-gray-800 dark:bg-white text-white dark:text-gray-800 rounded-lg px-4 py-3 font-semibold transition-all hover:bg-white/30 hover:shadow-xl'
                 >
-                  <p>Mostrar mapa e dar palpite</p>
+                  <p>Dê seu palpite</p>
                   <div className='text-6xl'>🗺️</div>
                 </button>
               </section>

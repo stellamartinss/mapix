@@ -1,7 +1,7 @@
 import { useAuth } from '../hooks/useAuth'
 
 function AttemptsCounter() {
-  const { isPremium, attemptsLeft, isBlocked } = useAuth()
+  const { isPremium, attemptsLeft, isBlocked, isGuest } = useAuth()
 
   // Não mostrar se for premium (ilimitado)
   if (isPremium) return null
@@ -18,10 +18,13 @@ function AttemptsCounter() {
       <span className="text-base">🎯</span>
       <span className="font-medium">
         {isBlocked ? (
-          <strong className="text-red-600 dark:text-red-400">Sem tentativas restantes</strong>
+          <strong className="text-red-600 dark:text-red-400">
+            {isGuest ? 'Faça login para continuar' : 'Sem tentativas restantes'}
+          </strong>
         ) : (
           <>
-            <strong className="text-slate-900 dark:text-slate-100 font-bold">{attemptsLeft}</strong> tentativa{attemptsLeft !== 1 ? 's' : ''} restante{attemptsLeft !== 1 ? 's' : ''} hoje
+            <strong className="text-slate-900 dark:text-slate-100 font-bold">{attemptsLeft}</strong> tentativa{attemptsLeft !== 1 ? 's' : ''} restante{attemptsLeft !== 1 ? 's' : ''}
+            {isGuest && ' (modo convidado)'}
           </>
         )}
       </span>

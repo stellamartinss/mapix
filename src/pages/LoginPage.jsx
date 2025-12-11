@@ -35,6 +35,14 @@ export default function LoginPage() {
     setIsLoading(false);
   };
 
+  const handleSkipLogin = () => {
+    // Configurar tentativas de convidado e ir para o jogo
+    if (!localStorage.getItem('guest_attempts')) {
+      localStorage.setItem('guest_attempts', '3');
+    }
+    navigate('/game');
+  };
+
   return (
     <div className="min-h-screen grid place-items-center text-center p-6">
       <div style={{ position: 'absolute', top: '24px', right: '24px' }}>
@@ -111,6 +119,14 @@ export default function LoginPage() {
                 className="w-full py-3.5 px-4 bg-gradient-to-br from-blue-500 to-green-500 dark:from-blue-600 dark:to-green-600 text-white border border-blue-500 dark:border-blue-600 rounded-lg transition-all hover:translate-y-[-1px] hover:bg-gradient-to-br hover:from-blue-600 hover:to-green-600 hover:shadow-xl hover:shadow-blue-500/30 disabled:opacity-60 disabled:cursor-not-allowed"
               >
                 {isLoading ? 'Entrando...' : 'Entrar'}
+              </button>
+
+              <button
+                type="button"
+                onClick={handleSkipLogin}
+                className="w-full py-3.5 px-4 bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-slate-600 rounded-lg transition-all hover:bg-slate-200 dark:hover:bg-slate-600"
+              >
+                Jogar como Convidado (3 tentativas grátis)
               </button>
             </div>
           </form>
