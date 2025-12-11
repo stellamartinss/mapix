@@ -44,8 +44,8 @@ export default function LoginPage() {
         <div className="bg-white dark:bg-slate-800 rounded-2xl p-8 shadow-xl shadow-slate-900/10 border border-slate-200 dark:border-slate-700 flex flex-col gap-6">
           {/* Header */}
           <div className="text-center mb-2">
-            <h1 className="m-0 mb-2 text-slate-900 dark:text-slate-100">Mapix</h1>
-            <p className="m-0 text-slate-500 dark:text-slate-400">Descubra o mundo ao seu redor</p>
+            <h1 className="m-0 mb-2 text-3xl font-bold text-slate-900 dark:text-slate-100">Mapix</h1>
+            <p className="m-0 text-sm text-slate-500 dark:text-slate-400">Descubra o mundo ao seu redor</p>
           </div>
 
           {/* Form */}
@@ -82,7 +82,7 @@ export default function LoginPage() {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-2 bg-transparent border-none p-1.5 text-slate-400 cursor-pointer rounded-md flex items-center justify-center hover:bg-slate-100 dark:hover:bg-slate-700 hover:text-slate-600 dark:hover:text-slate-300"
+                  className="absolute right-2  bg-transparent border-none p-1.5 text-slate-400 cursor-pointer rounded-md flex items-center justify-center hover:bg-slate-100 dark:hover:bg-slate-700 hover:text-slate-600 dark:hover:text-slate-300"
                   aria-label={showPassword ? 'Ocultar senha' : 'Mostrar senha'}
                 >
                   {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}

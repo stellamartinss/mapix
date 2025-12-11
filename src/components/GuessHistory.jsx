@@ -9,12 +9,12 @@ function GuessHistory({ entries }) {
     <div className="flex flex-col gap-2.5">
       {entries.slice(0, 5).map((item, idx) => (
         <div key={item.id} className="grid grid-cols-[auto_1fr_auto] gap-3 items-center p-2.5 px-3 border border-slate-200 dark:border-slate-700 rounded-xl bg-slate-50 dark:bg-slate-800">
-          <div className="font-bold text-slate-900 dark:text-slate-200 py-1.5 px-2.5 rounded-lg bg-slate-200 dark:bg-slate-700">#{idx + 1}</div>
+          <div className="font-bold text-xs text-slate-900 dark:text-slate-200 py-1.5 px-2.5 rounded-lg bg-slate-200 dark:bg-slate-700">#{idx + 1}</div>
           <div className="flex flex-col gap-1">
-            <p className="m-0 font-semibold text-slate-900 dark:text-slate-100">
+            <p className="m-0 font-semibold text-slate-900 dark:text-slate-100 text-xs">
               Distância: {item.distanceKm.toFixed(2)} km · Pontos: {item.score}
             </p>
-            <p className="m-0 text-slate-600 dark:text-slate-400 text-sm">
+            <p className="m-0 text-slate-600 dark:text-slate-400 text-xs">
               Palpite: {item.guess.lat.toFixed(2)}, {item.guess.lng.toFixed(2)} · Real:{' '}
               {item.real.lat.toFixed(2)}, {item.real.lng.toFixed(2)}
             </p>

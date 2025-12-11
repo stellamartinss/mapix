@@ -9,6 +9,7 @@ import BetModeSetup from '../components/BetMode/BetModeSetup';
 import BetModeResults from '../components/BetMode/BetModeResults';
 import BetGuessMap from '../components/BetMode/BetGuessMap';
 import UpgradeModal from '../components/UpgradeModal';
+import Logout from '../components/Authentication/Logout';
 import PremiumBadge from '../components/PremiumBadge';
 import AttemptsCounter from '../components/AttemptsCounter';
 import StartScreen from '../components/StartScreen';
@@ -19,6 +20,8 @@ import {
   getRandomLatLng,
   haversineDistance,
 } from '../utils/geo';
+import './styles/GamePage.css';
+import PlayAgain from '../components/PlayAgain';
 
 // Estados do Modo Aposta
 const BET_STATES = {
@@ -27,12 +30,19 @@ const BET_STATES = {
   RESULTS: 'results',
 };
 
+const pinMapStyle = {
+  position: 'fixed',
+  bottom: '0',
+  right: '0',
+  zIndex: '10',
+};
 
 export default function GamePage() {
   const navigate = useNavigate();
   const [mode, setMode] = useState(MODES.CLASSIC);
   const [isHidden, setIsHidden] = useState(true);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+  const [displayLastGuesses, setDisplayLastGuesses] = useState(false);
 
   const {
     isPremium,
@@ -59,19 +69,19 @@ export default function GamePage() {
   const pickRandomStreetView = useCallback(async () => {
     if (!window.google) return;
 
-    if (mode === MODES.CLASSIC && !isPremium) {
-      try {
-        const attemptResult = await attemptFunction();
-        if (!attemptResult.success || attemptResult.blocked) {
-          setShowUpgradeModal(true);
-          return;
-        }
-      } catch (error) {
-        console.error('Failed to use attempt:', error);
-        setShowUpgradeModal(true);
-        return;
-      }
-    }
+    // if (mode === MODES.CLASSIC && !isPremium) {
+    //   try {
+    //     const attemptResult = await attemptFunction();
+    //     if (!attemptResult.success || attemptResult.blocked) {
+    //       setShowUpgradeModal(true);
+    //       return;
+    //     }
+    //   } catch (error) {
+    //     console.error('Failed to use attempt:', error);
+    //     setShowUpgradeModal(true);
+    //     return;
+    //   }
+    // }
 
     setLoading(true);
     setGuessPosition(null);
@@ -291,6 +301,10 @@ export default function GamePage() {
     navigate('/login');
   };
 
+  const onHandleDisplayLastGuesses = () => {
+    setDisplayLastGuesses((prev) => !prev);
+  };
+
   const currentBetPlayer = betPlayers[currentBetPlayerIndex];
   const allBetPlayersGuessed =
     betPlayers.length > 0 && betPlayers.every((p) => allBetGuesses[p.id]);
@@ -298,7 +312,10 @@ export default function GamePage() {
   return (
     <div class='min-h-screen grid place-items-center p-6'>
       <div style={{ position: 'absolute', top: '24px', right: '24px' }}>
-        <DarkModeToggle />
+        <div className='flex md:flex-row flex-col md:items-center items-start gap-2'>
+          <Logout handleLogout={handleLogout} />
+          <DarkModeToggle />
+        </div>
       </div>
       <div className='w-full flex flex-col gap-8'>
         {/* HEADER */}
@@ -316,36 +333,16 @@ export default function GamePage() {
             {mode === MODES.CLASSIC && !isPremium && <AttemptsCounter />}
             {isPremium && <PremiumBadge />}
 
-            <ModeSelector currentMode={mode} onModeChange={handleModeChange} />
+            {/* <ModeSelector currentMode={mode} onModeChange={handleModeChange} /> */}
 
             {mode === MODES.CLASSIC && realPosition && (
-              <button
-                className='bg-white/20 text-white border border-white/30 rounded-lg px-4 py-3 font-semibold transition-all hover:bg-white/30 disabled:opacity-50'
-                type='button'
-                onClick={handlePlayAgain}
-                disabled={loading || isBlocked}
-              >
-                Jogar novamente
-              </button>
+            <PlayAgain onPlayAgain={handlePlayAgain} disabled={loading || isBlocked} />
             )}
-
-            <button
-              className='bg-red-500 text-white rounded-lg px-4 py-3 font-semibold transition-all hover:bg-red-600'
-              type='button'
-              onClick={handleLogout}
-            >
-              Sair
-            </button>
           </div>
         </header>
 
-        {/* HISTÓRICO */}
-        <div className='w-full'>
-          <LastGuesses history={history} />
-        </div>
-
         {/* MODAL PREMIUM */}
-        {/* {showUpgradeModal && (
+        {showUpgradeModal && (
           <UpgradeModal
             onClose={() => setShowUpgradeModal(false)}
             onUpgrade={async () => {
@@ -355,7 +352,35 @@ export default function GamePage() {
               }
             }}
           />
-        )} */}
+        )}
+
+        {/* HISTÓRICO */}
+        {history.length > 0 && (
+          <div
+            className={`w-full dark:bg-white bg-gray-800 rounded-3xl p-4 ${displayLastGuesses ? 'overflow-y-auto' : ''}`}
+            style={{
+              position: 'fixed',
+              top: '100px',
+              right: '0',
+              zIndex: '10',
+              maxWidth: displayLastGuesses ? '300px' : '50px',
+            }}
+          >
+            {displayLastGuesses ? (
+              <LastGuesses
+                history={history}
+                onHandleDisplayLastGuesses={onHandleDisplayLastGuesses}
+              />
+            ) : (
+              <span
+                className='writing-vertical-rl rotate-180 cursor-pointer dark:text-gray-800 text-white text-sm font-semibold'
+                onClick={() => onHandleDisplayLastGuesses(true)}
+              >
+                Últimos palpites
+              </span>
+            )}
+          </div>
+        )}
 
         {/* STREET VIEW / START */}
         <section className='bg-white/10 p-6 flex flex-col gap-3'>
@@ -374,7 +399,10 @@ export default function GamePage() {
         {mode === MODES.CLASSIC && realPosition && (
           <div className='w-full flex justify-center'>
             {isHidden ? (
-              <section className='bg-white/10 border border-white/20 rounded-2xl p-6 shadow-xl flex flex-col gap-4 w-full'>
+              <section
+                className='bg-white dark:bg-gray-800 border border-white/20 rounded-2xl p-6 shadow-xl flex flex-col gap-4'
+                style={pinMapStyle}
+              >
                 <Result
                   distanceKm={distanceKm}
                   score={lastScore}
@@ -392,10 +420,10 @@ export default function GamePage() {
                 />
               </section>
             ) : (
-              <section className='w-full flex justify-center'>
+              <section className='' style={pinMapStyle}>
                 <button
                   onClick={handleHideToggle}
-                  className='border border-white/30 bg-white/20 text-white rounded-lg px-4 py-3 font-semibold transition-all hover:bg-white/30 hover:shadow-xl'
+                  className='bg-gray-800 dark:bg-white text-white dark:text-gray-800 rounded-lg px-4 py-3 font-semibold transition-all hover:bg-white/30 hover:shadow-xl'
                 >
                   <p>Mostrar mapa e dar palpite</p>
                   <div className='text-6xl'>🗺️</div>
