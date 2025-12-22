@@ -19,7 +19,7 @@ function AttemptsCounter() {
       <span className="font-medium">
         {isBlocked ? (
           <strong className="text-red-600 dark:text-red-400">
-            {isGuest ? 'Faça login para continuar' : 'Sem tentativas restantes'}
+            Sem tentativas restantes
           </strong>
         ) : (
           <>

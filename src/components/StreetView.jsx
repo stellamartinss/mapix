@@ -48,7 +48,7 @@ function StreetView({ position, loading }) {
 
   return (
     <div
-      className='w-full h-screen rounded-xl overflow-hidden'
+      className='w-full h-[500px] rounded-xl overflow-hidden'
       ref={containerRef}
     />
   );

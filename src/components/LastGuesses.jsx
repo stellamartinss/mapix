@@ -4,7 +4,7 @@ function LastGuesses({ history, onHandleDisplayLastGuesses }) {
   return (
     <section className='panel'>
       <div className='grid grid-cols-2 items-center mb-4'>
-        <h2 className='m-0 mb-2 text-1xl font-bold dark:text-slate-900'>
+        <h2 className='m-0 mb-2 text-1xl font-bold text-slate-900 dark:text-white'>
           Últimos palpites
         </h2>
 

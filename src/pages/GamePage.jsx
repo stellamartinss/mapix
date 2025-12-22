@@ -1,17 +1,10 @@
 import { useCallback, useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import LastGuesses from '../components/LastGuesses';
 import GuessMap from '../components/GuessMap';
 import Result from '../components/Result';
 import StreetView from '../components/StreetView';
-import ModeSelector, { MODES } from '../components/ModeSelector';
-import BetModeSetup from '../components/BetMode/BetModeSetup';
-import BetModeResults from '../components/BetMode/BetModeResults';
-import BetGuessMap from '../components/BetMode/BetGuessMap';
-import UpgradeModal from '../components/UpgradeModal';
-import Logout from '../components/Authentication/Logout';
-import PremiumBadge from '../components/PremiumBadge';
 import AttemptsCounter from '../components/AttemptsCounter';
+import GuessFeedback from '../components/GuessFeedback';
 import StartScreen from '../components/StartScreen';
 import DarkModeToggle from '../components/DarkModeToggle';
 import { useAuth } from '../hooks/useAuth';
@@ -23,13 +16,6 @@ import {
 import './styles/GamePage.css';
 import PlayAgain from '../components/PlayAgain';
 
-// Estados do Modo Aposta
-const BET_STATES = {
-  SETUP: 'setup',
-  PLAYING: 'playing',
-  RESULTS: 'results',
-};
-
 const pinMapStyle = {
   position: 'fixed',
   bottom: '0',
@@ -37,21 +23,13 @@ const pinMapStyle = {
   zIndex: '10',
 };
 
+const darkModeToggle = { position: 'absolute', top: '24px', right: '24px' };
+
 export default function GamePage() {
-  const navigate = useNavigate();
-  const [mode, setMode] = useState(MODES.CLASSIC);
   const [isHidden, setIsHidden] = useState(true);
-  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const [displayLastGuesses, setDisplayLastGuesses] = useState(false);
 
-  const {
-    isPremium,
-    isBlocked,
-    attemptsLeft,
-    useAttempt: attemptFunction,
-    upgrade,
-    logout,
-  } = useAuth();
+  const { attemptsLeft } = useAuth();
 
   const [realPosition, setRealPosition] = useState(null);
   const [guessPosition, setGuessPosition] = useState(null);
@@ -60,36 +38,13 @@ export default function GamePage() {
   const [history, setHistory] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const [betState, setBetState] = useState(BET_STATES.SETUP);
-  const [betPlayers, setBetPlayers] = useState([]);
-  const [currentPlayerGuess, setCurrentPlayerGuess] = useState(null);
-  const [allBetGuesses, setAllBetGuesses] = useState({});
-  const [currentBetPlayerIndex, setCurrentBetPlayerIndex] = useState(0);
-
   const pickRandomStreetView = useCallback(async () => {
     if (!window.google) return;
-
-    if (mode === MODES.CLASSIC && !isPremium) {
-      try {
-        const attemptResult = await attemptFunction();
-        if (!attemptResult.success || attemptResult.blocked) {
-          setShowUpgradeModal(true);
-          return;
-        }
-      } catch (error) {
-        console.error('Failed to use attempt:', error);
-        setShowUpgradeModal(true);
-        return;
-      }
-    }
 
     setLoading(true);
     setGuessPosition(null);
     setDistanceKm(null);
     setLastScore(null);
-    setCurrentPlayerGuess(null);
-    setAllBetGuesses({});
-    setCurrentBetPlayerIndex(0);
 
     const service = new window.google.maps.StreetViewService();
     const maxAttempts = 50; // Increased to account for validation rejections
@@ -189,7 +144,7 @@ export default function GamePage() {
     setRealPosition(location);
     setLoading(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mode, isPremium]);
+  }, []);
 
   const handleStartGame = useCallback(() => {
     pickRandomStreetView();
@@ -218,18 +173,11 @@ export default function GamePage() {
   }, [guessPosition, realPosition]);
 
   const handlePlayAgain = useCallback(() => {
-    if (mode === MODES.BET) {
-      setBetState(BET_STATES.SETUP);
-      setAllBetGuesses({});
-      setCurrentBetPlayerIndex(0);
-      setCurrentPlayerGuess(null);
-    }
     pickRandomStreetView();
-  }, [pickRandomStreetView, mode]);
+  }, [pickRandomStreetView]);
 
   const handleHideToggle = () => {
     setIsHidden((prev) => !prev);
-    console.log('toggled hide', isHidden);
   };
 
   const linePath = useMemo(() => {
@@ -237,83 +185,14 @@ export default function GamePage() {
     return [realPosition, guessPosition];
   }, [distanceKm, realPosition, guessPosition]);
 
-  const handleBetModeStart = useCallback((players) => {
-    setBetPlayers(players);
-    setBetState(BET_STATES.PLAYING);
-    setCurrentBetPlayerIndex(0);
-    setCurrentPlayerGuess(null);
-    setAllBetGuesses({});
-  }, []);
-
-  const handleBetModeCancel = useCallback(() => {
-    setBetState(BET_STATES.SETUP);
-    setBetPlayers([]);
-  }, []);
-
-  const handleBetGuess = useCallback(
-    (guessPos) => {
-      const currentPlayer = betPlayers[currentBetPlayerIndex];
-      if (!currentPlayer || allBetGuesses[currentPlayer.id]) return;
-
-      setCurrentPlayerGuess(guessPos);
-      setAllBetGuesses((prev) => ({
-        ...prev,
-        [currentPlayer.id]: guessPos,
-      }));
-    },
-    [betPlayers, currentBetPlayerIndex, allBetGuesses]
-  );
-
-  const handleBetNextPlayer = useCallback(() => {
-    if (currentBetPlayerIndex < betPlayers.length - 1) {
-      const nextIndex = currentBetPlayerIndex + 1;
-      setCurrentBetPlayerIndex(nextIndex);
-      const nextPlayer = betPlayers[nextIndex];
-      if (nextPlayer && allBetGuesses[nextPlayer.id]) {
-        setCurrentPlayerGuess(allBetGuesses[nextPlayer.id]);
-      } else {
-        setCurrentPlayerGuess(null);
-      }
-    }
-  }, [betPlayers, currentBetPlayerIndex, allBetGuesses]);
-
-  const handleBetRoundComplete = useCallback(() => {
-    setBetState(BET_STATES.RESULTS);
-  }, []);
-
-  const handleModeChange = useCallback((newMode) => {
-    setMode(newMode);
-    if (newMode === MODES.CLASSIC) {
-      setBetState(BET_STATES.SETUP);
-      setBetPlayers([]);
-      setAllBetGuesses({});
-      setCurrentPlayerGuess(null);
-    } else {
-      setGuessPosition(null);
-      setDistanceKm(null);
-      setLastScore(null);
-    }
-  }, []);
-
-  const handleLogout = () => {
-    logout();
-    localStorage.removeItem('isAuthenticated');
-    navigate('/login');
-  };
-
   const onHandleDisplayLastGuesses = () => {
     setDisplayLastGuesses((prev) => !prev);
   };
 
-  const currentBetPlayer = betPlayers[currentBetPlayerIndex];
-  const allBetPlayersGuessed =
-    betPlayers.length > 0 && betPlayers.every((p) => allBetGuesses[p.id]);
-
   return (
     <div class='min-h-screen grid place-items-center p-6'>
-      <div style={{ position: 'absolute', top: '24px', right: '24px' }}>
+      <div style={darkModeToggle}>
         <div className='flex md:flex-row flex-col md:items-center items-start gap-2'>
-          <Logout handleLogout={handleLogout} />
           <DarkModeToggle />
         </div>
       </div>
@@ -330,73 +209,43 @@ export default function GamePage() {
           </div>
 
           <div className='flex md:flex-row flex-col items-center gap-3 md:w-auto w-full'>
-            {mode === MODES.CLASSIC && !isPremium && <AttemptsCounter />}
-            {isPremium && <PremiumBadge />}
+            <GuessFeedback distanceKm={distanceKm} score={lastScore} />
 
-            {/* <ModeSelector currentMode={mode} onModeChange={handleModeChange} /> */}
-
-            {mode === MODES.CLASSIC && realPosition && (
-            <PlayAgain onPlayAgain={handlePlayAgain} disabled={loading || isBlocked} />
+            {realPosition && !loading && (
+              <PlayAgain onPlayAgain={handlePlayAgain} disabled={loading} />
             )}
           </div>
         </header>
 
-        {/* MODAL PREMIUM */}
-        {showUpgradeModal && (
-          <UpgradeModal
-            onClose={() => setShowUpgradeModal(false)}
-            onUpgrade={async () => {
-              const result = await upgrade();
-              if (result.success && result.checkoutUrl) {
-                window.location.href = result.checkoutUrl;
-              }
-            }}
-          />
-        )}
-
-        {/* HISTÓRICO */}
-        {history.length > 0 && (
-          <div
-            className={`w-full dark:bg-white bg-gray-800 rounded-3xl p-4 ${displayLastGuesses ? 'overflow-y-auto' : ''}`}
-            style={{
-              position: 'fixed',
-              top: '100px',
-              right: '0',
-              zIndex: '10',
-              maxWidth: displayLastGuesses ? '300px' : '50px',
-            }}
-          >
-            {displayLastGuesses ? (
-              <LastGuesses
-                history={history}
-                onHandleDisplayLastGuesses={onHandleDisplayLastGuesses}
-              />
-            ) : (
-              <span
-                className='writing-vertical-rl rotate-180 cursor-pointer dark:text-gray-800 text-white text-sm font-semibold'
-                onClick={() => onHandleDisplayLastGuesses(true)}
-              >
-                Últimos palpites
-              </span>
-            )}
-          </div>
-        )}
-
         {/* STREET VIEW / START */}
-        <section className='bg-white/10 p-6 flex flex-col gap-3'>
+        <section
+          className={`${
+            !realPosition && !loading ? 'bg-white/10' : ''
+          } rounded-3xl p-6 flex flex-col gap-3`}
+        >
           {!realPosition && !loading ? (
             <StartScreen
               onStart={handleStartGame}
-              isBlocked={isBlocked}
               attemptsLeft={attemptsLeft}
             />
           ) : (
-            <StreetView position={realPosition} loading={loading} />
+            <div className='flex w-full gap-4'>
+              <div className='w-[80%]'>
+                <StreetView position={realPosition} loading={loading} />
+              </div>
+
+              <div className='w-[20%]'>
+                <LastGuesses
+                  history={history}
+                  onHandleDisplayLastGuesses={onHandleDisplayLastGuesses}
+                />
+              </div>
+            </div>
           )}
         </section>
 
         {/* CLASSIC MODE */}
-        {mode === MODES.CLASSIC && realPosition && (
+        {realPosition && !loading && (
           <div className='w-full flex justify-center'>
             {isHidden ? (
               <section
@@ -431,140 +280,6 @@ export default function GamePage() {
               </section>
             )}
           </div>
-        )}
-
-        {/* BET MODE */}
-        {mode === MODES.BET && (
-          <>
-            {betState === BET_STATES.SETUP && (
-              <section className='bg-white/10 border border-white/20 rounded-2xl p-6 shadow-xl flex flex-col gap-4'>
-                <BetModeSetup
-                  onStartGame={handleBetModeStart}
-                  onCancel={handleBetModeCancel}
-                />
-              </section>
-            )}
-
-            {betState === BET_STATES.PLAYING && (
-              <>
-                <section className='panel'>
-                  <div className='bet-game'>
-                    <div className='bet-game-status'>
-                      <h3>
-                        {allBetPlayersGuessed
-                          ? 'Todos fizeram seus palpites!'
-                          : `${
-                              currentBetPlayer?.name || ''
-                            } está fazendo seu palpite`}
-                      </h3>
-                      <div className='players-progress'>
-                        {betPlayers.map((player, index) => {
-                          const hasGuessed = !!allBetGuesses[player.id];
-                          const isCurrent =
-                            index === currentBetPlayerIndex &&
-                            !allBetPlayersGuessed;
-                          return (
-                            <div
-                              key={player.id}
-                              className={`player-progress-item ${
-                                hasGuessed ? 'done' : ''
-                              } ${isCurrent ? 'current' : ''}`}
-                            >
-                              <span className='player-progress-name'>
-                                {player.name}
-                              </span>
-                              <span className='player-progress-bet'>
-                                R$ {player.bet}
-                              </span>
-                              {hasGuessed && (
-                                <span className='checkmark'>✓</span>
-                              )}
-                              {isCurrent && !hasGuessed && (
-                                <span className='current-indicator'>→</span>
-                              )}
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </div>
-                    {!allBetPlayersGuessed && currentBetPlayer && (
-                      <div className='bet-game-actions'>
-                        <p className='hint'>
-                          É a vez de <strong>{currentBetPlayer.name}</strong>.
-                          Faça seu palpite no mapa abaixo.
-                        </p>
-                      </div>
-                    )}
-                    {currentPlayerGuess &&
-                      currentBetPlayer &&
-                      !allBetPlayersGuessed && (
-                        <div className='bet-game-actions'>
-                          <button
-                            type='button'
-                            className='primary'
-                            onClick={handleBetNextPlayer}
-                          >
-                            {currentBetPlayerIndex < betPlayers.length - 1
-                              ? 'Próximo Jogador'
-                              : 'Ver Resultados'}
-                          </button>
-                        </div>
-                      )}
-                    {allBetPlayersGuessed && (
-                      <div className='bet-game-actions'>
-                        <button
-                          type='button'
-                          className='primary'
-                          onClick={handleBetRoundComplete}
-                        >
-                          Ver Resultados
-                        </button>
-                      </div>
-                    )}
-                  </div>
-                </section>
-                <section className='bg-white/10 border border-white/20 rounded-2xl p-6 shadow-xl flex flex-col gap-4'>
-                  <BetGuessMap
-                    currentPlayerGuess={currentPlayerGuess}
-                    allPlayerGuesses={allBetGuesses}
-                    players={betPlayers}
-                    realPosition={null}
-                    showResults={false}
-                    allowGuess={
-                      !allBetPlayersGuessed &&
-                      currentBetPlayer &&
-                      !allBetGuesses[currentBetPlayer.id]
-                    }
-                    onGuess={handleBetGuess}
-                  />
-                </section>
-              </>
-            )}
-
-            {betState === BET_STATES.RESULTS && (
-              <>
-                <section className='bg-white/10 border border-white/20 rounded-2xl p-6 shadow-xl flex flex-col gap-4'>
-                  <BetGuessMap
-                    currentPlayerGuess={null}
-                    allPlayerGuesses={allBetGuesses}
-                    players={betPlayers}
-                    realPosition={realPosition}
-                    showResults={true}
-                    onGuess={() => {}}
-                  />
-                </section>
-
-                <section className='bg-white/10 border border-white/20 rounded-2xl p-6 shadow-xl flex flex-col gap-4'>
-                  <BetModeResults
-                    players={betPlayers}
-                    realPosition={realPosition}
-                    playerGuesses={allBetGuesses}
-                    onPlayAgain={handlePlayAgain}
-                  />
-                </section>
-              </>
-            )}
-          </>
         )}
       </div>
     </div>
