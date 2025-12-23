@@ -32,7 +32,7 @@ function StreetView({ position, loading }) {
 
   if (loading) {
     return (
-      <div className='h-[400px] rounded-xl bg-gradient-to-br from-indigo-50 to-slate-100 dark:from-slate-800 dark:to-slate-900 grid place-items-center text-slate-600 dark:text-slate-400 text-center'>
+      <div className='h-[400px] md:rounded-xl bg-gradient-to-br from-indigo-50 to-slate-100 dark:from-slate-800 dark:to-slate-900 grid place-items-center text-slate-600 dark:text-slate-400 text-center'>
         Gerando um ponto aleatório...
       </div>
     );
@@ -40,7 +40,7 @@ function StreetView({ position, loading }) {
 
   if (!position) {
     return (
-      <div className='h-[400px] rounded-xl bg-gradient-to-br from-indigo-50 to-slate-100 dark:from-slate-800 dark:to-slate-900 grid place-items-center text-slate-600 dark:text-slate-400 text-center'>
+      <div className='h-[400px] md:rounded-xl bg-gradient-to-br from-indigo-50 to-slate-100 dark:from-slate-800 dark:to-slate-900 grid place-items-center text-slate-600 dark:text-slate-400 text-center'>
         Carregando Street View. Aguarde um instante.
       </div>
     );
@@ -48,7 +48,7 @@ function StreetView({ position, loading }) {
 
   return (
     <div
-      className='w-full h-[500px] rounded-xl overflow-hidden'
+      className='w-full h-[500px] md:rounded-xl overflow-hidden'
       ref={containerRef}
     />
   );

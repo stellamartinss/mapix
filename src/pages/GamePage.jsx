@@ -7,7 +7,10 @@ import AttemptsCounter from '../components/AttemptsCounter';
 import GuessFeedback from '../components/GuessFeedback';
 import StartScreen from '../components/StartScreen';
 import DarkModeToggle from '../components/DarkModeToggle';
+import CountdownTimer from '../components/CountdownTimer';
+import RoundLimitReached from '../components/RoundLimitReached';
 import { useAuth } from '../hooks/useAuth';
+import { useRoundLimit } from '../hooks/useRoundLimit';
 import {
   calculateScore,
   getRandomLatLng,
@@ -26,10 +29,11 @@ const pinMapStyle = {
 const darkModeToggle = { position: 'absolute', top: '24px', right: '24px' };
 
 export default function GamePage() {
-  const [isHidden, setIsHidden] = useState(true);
+  const [isHidden, setIsHidden] = useState(false);
   const [displayLastGuesses, setDisplayLastGuesses] = useState(false);
 
   const { attemptsLeft } = useAuth();
+  const { hasReachedLimit, canPlayNewRound, incrementRounds, getRemainingRounds } = useRoundLimit();
 
   const [realPosition, setRealPosition] = useState(null);
   const [guessPosition, setGuessPosition] = useState(null);
@@ -37,6 +41,8 @@ export default function GamePage() {
   const [lastScore, setLastScore] = useState(null);
   const [history, setHistory] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [timerActive, setTimerActive] = useState(false);
+  const [hasTimedOut, setHasTimedOut] = useState(false);
 
   const pickRandomStreetView = useCallback(async () => {
     if (!window.google) return;
@@ -45,6 +51,10 @@ export default function GamePage() {
     setGuessPosition(null);
     setDistanceKm(null);
     setLastScore(null);
+    setTimerActive(false);
+    setHasTimedOut(false);
+    setTimerActive(false);
+    setHasTimedOut(false);
 
     const service = new window.google.maps.StreetViewService();
     const maxAttempts = 50; // Increased to account for validation rejections
@@ -143,15 +153,21 @@ export default function GamePage() {
     const location = await attempt();
     setRealPosition(location);
     setLoading(false);
+    setTimerActive(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleStartGame = useCallback(() => {
+    if (!canPlayNewRound()) {
+      return;
+    }
     pickRandomStreetView();
-  }, [pickRandomStreetView]);
+  }, [pickRandomStreetView, canPlayNewRound]);
 
   const handleGuess = useCallback(() => {
     if (!realPosition || !guessPosition) return;
+    setTimerActive(false);
+    incrementRounds();
     const distance = haversineDistance(realPosition, guessPosition);
     const score = calculateScore(distance);
     setDistanceKm(distance);
@@ -172,9 +188,18 @@ export default function GamePage() {
     ]);
   }, [guessPosition, realPosition]);
 
+  const handleTimeout = useCallback(() => {
+    setTimerActive(false);
+    setHasTimedOut(true);
+    incrementRounds();
+  }, [incrementRounds]);
+
   const handlePlayAgain = useCallback(() => {
+    if (!canPlayNewRound()) {
+      return;
+    }
     pickRandomStreetView();
-  }, [pickRandomStreetView]);
+  }, [pickRandomStreetView, canPlayNewRound]);
 
   const handleHideToggle = () => {
     setIsHidden((prev) => !prev);
@@ -190,18 +215,18 @@ export default function GamePage() {
   };
 
   return (
-    <div class='min-h-screen grid place-items-center p-6'>
+    <div class='min-h-screen grid place-items-center p-0 md:p-6'>
       <div style={darkModeToggle}>
         <div className='flex md:flex-row flex-col md:items-center items-start gap-2'>
           <DarkModeToggle />
         </div>
       </div>
-      <div className='w-full flex flex-col gap-8'>
+      <div className='w-full flex flex-col gap-2 md:gap-8 px-0 md:px-0'>
         {/* HEADER */}
-        <header className='flex md:flex-row flex-col md:items-center items-start justify-between gap-6'>
-          <div>
+        <header className='flex md:flex-row flex-col md:items-center items-start justify-between gap-3 md:gap-6'>
+          <div className="px-2">
             <p className='uppercase tracking-wide text-xs text-slate-300 m-0 mb-1'>
-              Mapix
+              Mapin {!hasReachedLimit && `• ${getRemainingRounds()} rodadas restantes`}
             </p>
             <h1 className='m-0 text-3xl font-bold text-slate-900 dark:text-white'>
               Encontre onde o Street View está
@@ -209,9 +234,15 @@ export default function GamePage() {
           </div>
 
           <div className='flex md:flex-row flex-col items-center gap-3 md:w-auto w-full'>
+            {hasTimedOut && distanceKm === null && (
+              <div className="bg-red-500 text-white px-4 py-2 rounded-lg font-bold">
+                ⏰ Tempo esgotado!
+              </div>
+            )}
+            
             <GuessFeedback distanceKm={distanceKm} score={lastScore} />
 
-            {realPosition && !loading && (
+            {realPosition && !loading && !timerActive && (
               <PlayAgain onPlayAgain={handlePlayAgain} disabled={loading} />
             )}
           </div>
@@ -221,20 +252,29 @@ export default function GamePage() {
         <section
           className={`${
             !realPosition && !loading ? 'bg-white/10' : ''
-          } rounded-3xl p-6 flex flex-col gap-3`}
+          } md:rounded-3xl p-0 md:p-6 flex flex-col gap-0 md:gap-3 -mx-0 md:mx-0`}
         >
-          {!realPosition && !loading ? (
+          {hasReachedLimit ? (
+            <RoundLimitReached />
+          ) : !realPosition && !loading ? (
             <StartScreen
               onStart={handleStartGame}
               attemptsLeft={attemptsLeft}
             />
           ) : (
-            <div className='flex w-full gap-4'>
-              <div className='w-[80%]'>
+            <div className='flex md:flex-row flex-col w-full gap-0 md:gap-4'>
+              <div className='md:w-[80%] w-full relative'>
                 <StreetView position={realPosition} loading={loading} />
+                <div className='absolute top-4 left-4 z-10'>
+                  <CountdownTimer 
+                    duration={75} 
+                    onTimeout={handleTimeout} 
+                    isActive={timerActive}
+                  />
+                </div>
               </div>
 
-              <div className='w-[20%]'>
+              <div className='md:w-[20%] w-full'>
                 <LastGuesses
                   history={history}
                   onHandleDisplayLastGuesses={onHandleDisplayLastGuesses}
@@ -249,32 +289,28 @@ export default function GamePage() {
           <div className='w-full flex justify-center'>
             {isHidden ? (
               <section
-                className='bg-white dark:bg-gray-800 border border-white/20 rounded-2xl p-6 shadow-xl flex flex-col gap-4'
+                className='rounded-2xl p-0 md:p-6 shadow-xl flex flex-col gap-4 w-full left-0 md:w-[500px] md:left-auto md:right-0'
                 style={pinMapStyle}
               >
-                <Result
-                  distanceKm={distanceKm}
-                  score={lastScore}
-                  disableConfirm={!guessPosition || loading}
-                  onConfirm={handleGuess}
-                  onPlayAgain={handlePlayAgain}
-                  onHideToggle={handleHideToggle}
-                />
                 <GuessMap
                   guessPosition={guessPosition}
                   realPosition={realPosition}
                   showResult={distanceKm !== null}
                   linePath={linePath}
                   onGuess={setGuessPosition}
+                  onConfirm={handleGuess}
+                  disableConfirm={!guessPosition || loading || hasReachedLimit}
+                  disableInteraction={hasReachedLimit}
+                  distanceKm={distanceKm}
+                  onHideToggle={handleHideToggle}
                 />
               </section>
             ) : (
-              <section className='' style={pinMapStyle}>
+              <section className='w-full md:w-auto flex justify-end mb-4 mr-4' style={pinMapStyle}>
                 <button
                   onClick={handleHideToggle}
-                  className='bg-gray-800 dark:bg-white text-white dark:text-gray-800 rounded-lg px-4 py-3 font-semibold transition-all hover:bg-white/30 hover:shadow-xl'
+                  className='dark:bg-yellow-500 bg-green-500 dark:hover:bg-yellow-600 hover:bg-green-700 rounded-lg px-4 py-3 transition-all hover:shadow-xl text-white'
                 >
-                  <p>Dê seu palpite</p>
                   <div className='text-6xl'>🗺️</div>
                 </button>
               </section>

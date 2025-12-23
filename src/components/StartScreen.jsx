@@ -5,7 +5,7 @@ function StartScreen({ onStart, isBlocked, attemptsLeft }) {
     <div className="min-h-[400px] grid place-items-center py-12 px-6">
       <div className="max-w-[600px] text-center flex flex-col gap-6">
         <div className="text-6xl mb-2 md:text-8xl">🗺️</div>
-        <h2 className="m-0 text-2xl md:text-3xl text-slate-900 dark:text-slate-100">Bem-vindo ao Mapix!</h2>
+        <h2 className="m-0 text-2xl md:text-3xl text-slate-900 dark:text-slate-100">Bem-vindo ao Mapin!</h2>
         <p className="m-0 text-base text-slate-500 dark:text-slate-400 leading-relaxed">
           Teste seus conhecimentos geográficos! Você verá um local aleatório do mundo no Street View
           e precisará adivinhar onde ele está no mapa.
@@ -23,7 +23,7 @@ function StartScreen({ onStart, isBlocked, attemptsLeft }) {
                 <span>Você tem <strong className="text-slate-900 dark:text-slate-100 font-bold">{attemptsLeft}</strong> tentativa{attemptsLeft !== 1 ? 's' : ''} restante{attemptsLeft !== 1 ? 's' : ''} hoje</span>
               </div>
             )}
-            <button className="px-8 py-4 text-lg font-semibold min-w-[200px] self-center bg-gradient-to-br from-blue-500 to-green-500 dark:from-blue-600 dark:to-green-600 text-white border border-blue-500 dark:border-blue-600 rounded-lg transition-all hover:translate-y-[-1px] hover:bg-gradient-to-br hover:from-blue-600 hover:to-green-600 hover:shadow-xl hover:shadow-blue-500/30 disabled:opacity-60 disabled:cursor-not-allowed" onClick={onStart} type="button">
+            <button className="dark:bg-yellow-500 bg-green-500 dark:hover:bg-yellow-600 hover:bg-green-600 rounded-lg px-4 py-3 font-semibold text-white transition-all hover:shadow-lg disabled:opacity-60 disabled:cursor-not-allowed" onClick={onStart} type="button">
               🎯 Iniciar Jogo
             </button>
           </>
