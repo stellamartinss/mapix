@@ -7,10 +7,12 @@ import AttemptsCounter from '../components/AttemptsCounter';
 import GuessFeedback from '../components/GuessFeedback';
 import StartScreen from '../components/StartScreen';
 import DarkModeToggle from '../components/DarkModeToggle';
+import LanguageToggle from '../components/LanguageToggle';
 import CountdownTimer from '../components/CountdownTimer';
 import RoundLimitReached from '../components/RoundLimitReached';
 import { useAuth } from '../hooks/useAuth';
 import { useRoundLimit } from '../hooks/useRoundLimit';
+import { useTranslation } from '../hooks/useTranslation';
 import {
   calculateScore,
   getRandomLatLng,
@@ -34,6 +36,7 @@ export default function GamePage() {
 
   const { attemptsLeft } = useAuth();
   const { hasReachedLimit, canPlayNewRound, incrementRounds, getRemainingRounds } = useRoundLimit();
+  const { t } = useTranslation();
 
   const [realPosition, setRealPosition] = useState(null);
   const [guessPosition, setGuessPosition] = useState(null);
@@ -218,6 +221,7 @@ export default function GamePage() {
     <div class='min-h-screen grid place-items-center p-0 md:p-6'>
       <div style={darkModeToggle}>
         <div className='flex md:flex-row flex-col md:items-center items-start gap-2'>
+          <LanguageToggle />
           <DarkModeToggle />
         </div>
       </div>
@@ -226,17 +230,17 @@ export default function GamePage() {
         <header className='flex md:flex-row flex-col md:items-center items-start justify-between gap-3 md:gap-6'>
           <div className="px-2">
             <p className='uppercase tracking-wide text-xs text-slate-300 m-0 mb-1'>
-              Mapin {!hasReachedLimit && `• ${getRemainingRounds()} rodadas restantes`}
+              {t('appName')} {!hasReachedLimit && `• ${getRemainingRounds()} ${t('roundsRemaining')}`}
             </p>
             <h1 className='m-0 text-3xl font-bold text-slate-900 dark:text-white'>
-              Encontre onde o Street View está
+              {t('tagline')}
             </h1>
           </div>
 
           <div className='flex md:flex-row flex-col items-center gap-3 md:w-auto w-full'>
             {hasTimedOut && distanceKm === null && (
               <div className="bg-red-500 text-white px-4 py-2 rounded-lg font-bold">
-                ⏰ Tempo esgotado!
+                {t('timeout')}
               </div>
             )}
             

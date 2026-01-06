@@ -10,4 +10,31 @@ export default defineConfig({
       plugins: [tailwindcss()],
     },
   },
+  build: {
+    // Minificação otimizada
+    minify: 'terser',
+    terserOptions: {
+      compress: {
+        drop_console: true, // Remove console.logs em produção
+        drop_debugger: true,
+      },
+    },
+    // Code splitting para melhor cache
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'react-vendor': ['react', 'react-dom'],
+          'map-vendor': ['@react-google-maps/api'],
+        },
+      },
+    },
+    // Chunk size warnings
+    chunkSizeWarningLimit: 1000,
+  },
+  // Otimizações de performance
+  server: {
+    hmr: {
+      overlay: true,
+    },
+  },
 })

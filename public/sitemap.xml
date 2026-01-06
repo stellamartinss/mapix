@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  
+  <!-- Homepage -->
+  <url>
+    <loc>https://mapix.com.br/</loc>
+    <lastmod>2026-01-06</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://mapix.com.br/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://mapix.com.br/en" />
+  </url>
+  
+  <!-- Game Page - Classic Mode -->
+  <url>
+    <loc>https://mapix.com.br/game</loc>
+    <lastmod>2026-01-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://mapix.com.br/game" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://mapix.com.br/en/game" />
+  </url>
+  
+  <!-- Game Page - Bet Mode -->
+  <url>
+    <loc>https://mapix.com.br/game/bet</loc>
+    <lastmod>2026-01-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="pt-BR" href="https://mapix.com.br/game/bet" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://mapix.com.br/en/game/bet" />
+  </url>
+  
+</urlset>

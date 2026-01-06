@@ -1,0 +1,18 @@
+# Robots.txt for Mapix
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /admin/
+
+# Sitemaps
+Sitemap: https://mapix.com.br/sitemap.xml
+
+# Crawl-delay (optional)
+Crawl-delay: 1
+
+# Specific bots
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /

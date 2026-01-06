@@ -1,5 +1,6 @@
 import { GoogleMap, Marker, Polyline } from '@react-google-maps/api';
 import PropTypes from 'prop-types';
+import { useTranslation } from '../hooks/useTranslation';
 
 const containerStyle = {
   width: '100%',
@@ -23,6 +24,8 @@ function GuessMap({
   onHideToggle,
   disableInteraction,
 }) {
+  const { t } = useTranslation();
+  
   const handleClick = (event) => {
     if (disableInteraction) return;
     const lat = event.latLng?.lat();
@@ -84,7 +87,7 @@ function GuessMap({
           disabled={disableConfirm}
           className='absolute bottom-4 right-4 bg-yellow-600 hover:bg-yellow-700 rounded-lg px-4 py-3 font-semibold text-white transition-all hover:translate-y-[-1px] hover:shadow-lg disabled:opacity-60 disabled:cursor-not-allowed z-10'
         >
-          É aqui!
+          {t('confirmGuess')}
         </button>
       )}
     </div>

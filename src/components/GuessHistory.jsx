@@ -1,6 +1,10 @@
 import PropTypes from 'prop-types'
+import { useTranslation } from '../hooks/useTranslation';
 
 function GuessHistory({ entries }) {
+
+  const {t} = useTranslation();
+  
   const getFeedbackStyle = (score) => {
     if (score >= 4900) return { 
       emoji: '🎯', 
@@ -61,7 +65,7 @@ function GuessHistory({ entries }) {
   };
 
   if (!entries.length) {
-    return <p className="text-slate-500 dark:text-slate-400 text-sm">Ainda sem palpites. Faça um para ver o histórico.</p>
+    return <p className="text-slate-500 dark:text-slate-400 text-sm">{t('noGuesses')}</p>
   }
 
   return (

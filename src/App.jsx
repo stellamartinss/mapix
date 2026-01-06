@@ -6,6 +6,7 @@ import {
 } from 'react-router-dom';
 import { LoadScript } from '@react-google-maps/api';
 import { AuthProvider } from './hooks/useAuth';
+import { LanguageProvider } from './hooks/useTranslation';
 import GamePage from './pages/GamePage';
 import './App.css';
 
@@ -35,18 +36,20 @@ function App() {
   }
 
   return (
-    <AuthProvider>
-      <Router>
-        <LoadScript googleMapsApiKey={apiKey} libraries={libraries}>
-          <div className='max-w-none mx-auto py-8 pb-12 flex flex-col gap-4'>
-            <Routes>
-              <Route path='/game' element={<GamePage />} />
-              <Route path='/' element={<Navigate to='/game' replace />} />
-            </Routes>
-          </div>
-        </LoadScript>
-      </Router>
-    </AuthProvider>
+    <LanguageProvider>
+      <AuthProvider>
+        <Router>
+          <LoadScript googleMapsApiKey={apiKey} libraries={libraries}>
+            <div className='max-w-none mx-auto py-8 pb-12 flex flex-col gap-4'>
+              <Routes>
+                <Route path='/game' element={<GamePage />} />
+                <Route path='/' element={<Navigate to='/game' replace />} />
+              </Routes>
+            </div>
+          </LoadScript>
+        </Router>
+      </AuthProvider>
+    </LanguageProvider>
   );
 }
 

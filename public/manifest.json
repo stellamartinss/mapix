@@ -1,0 +1,63 @@
+{
+  "name": "Mapix - Jogo de Geografia",
+  "short_name": "Mapix",
+  "description": "Jogo de geografia online gratuito estilo GeoGuessr com Street View",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#4A90E2",
+  "orientation": "any",
+  "lang": "pt-BR",
+  "dir": "ltr",
+  "categories": ["games", "education"],
+  "icons": [
+    {
+      "src": "/map-pin.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/screenshot-desktop.png",
+      "sizes": "1920x1080",
+      "type": "image/png",
+      "form_factor": "wide"
+    },
+    {
+      "src": "/screenshot-mobile.png",
+      "sizes": "750x1334",
+      "type": "image/png",
+      "form_factor": "narrow"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Modo Clássico",
+      "short_name": "Clássico",
+      "description": "Jogar no modo clássico",
+      "url": "/game?mode=classic",
+      "icons": [{ "src": "/icon-classic.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "Modo Aposta",
+      "short_name": "Aposta",
+      "description": "Jogar no modo aposta com amigos",
+      "url": "/game?mode=bet",
+      "icons": [{ "src": "/icon-bet.png", "sizes": "96x96" }]
+    }
+  ]
+}
