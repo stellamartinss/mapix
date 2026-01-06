@@ -6,32 +6,42 @@ import {
 } from 'react-router-dom';
 import { LoadScript } from '@react-google-maps/api';
 import { AuthProvider } from './hooks/useAuth';
-import { LanguageProvider } from './hooks/useTranslation';
+import { LanguageProvider, useTranslation } from './hooks/useTranslation';
 import GamePage from './pages/GamePage';
 import './App.css';
 
 const libraries = ['places'];
+
+function ApiKeyError() {
+  const { t } = useTranslation();
+  
+  return (
+    <div className='min-h-screen grid place-items-center text-center p-6'>
+      <div>
+        <h1 className='text-3xl font-bold mb-4'>{t('appName')}</h1>
+        <p className='text-slate-600 dark:text-slate-400'>
+          {t('apiKeyError')}{' '}
+          <code className='bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded'>
+            .env
+          </code>{' '}
+          {t('apiKeyWith')}{' '}
+          <code className='bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded'>
+            VITE_GOOGLE_MAPS_API_KEY=
+          </code>
+        </p>
+      </div>
+    </div>
+  );
+}
 
 function App() {
   const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 
   if (!apiKey) {
     return (
-      <div className='min-h-screen grid place-items-center text-center p-6'>
-        <div>
-          <h1 className='text-3xl font-bold mb-4'>Mapin</h1>
-          <p className='text-slate-600 dark:text-slate-400'>
-            Adicione sua chave do Google Maps em um arquivo{' '}
-            <code className='bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded'>
-              .env
-            </code>{' '}
-            com:{' '}
-            <code className='bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded'>
-              VITE_GOOGLE_MAPS_API_KEY=
-            </code>
-          </p>
-        </div>
-      </div>
+      <LanguageProvider>
+        <ApiKeyError />
+      </LanguageProvider>
     );
   }
 

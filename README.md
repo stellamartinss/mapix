@@ -1,4 +1,4 @@
-# Mapix🗺️
+# Mapin🗺️
 
 Um jogo de geografia estilo GeoGuessr desenvolvido em React, com duas modalidades: **Clássico** e **Aposta (Bet Mode)**.
 

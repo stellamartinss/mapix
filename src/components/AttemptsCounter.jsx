@@ -1,7 +1,9 @@
 import { useAuth } from '../hooks/useAuth'
+import { useTranslation } from '../hooks/useTranslation'
 
 function AttemptsCounter() {
   const { isPremium, attemptsLeft, isBlocked, isGuest } = useAuth()
+  const { t } = useTranslation()
 
   // Não mostrar se for premium (ilimitado)
   if (isPremium) return null
@@ -19,12 +21,14 @@ function AttemptsCounter() {
       <span className="font-medium">
         {isBlocked ? (
           <strong className="text-red-600 dark:text-red-400">
-            Sem tentativas restantes
+            {t('noAttemptsLeft')}
           </strong>
         ) : (
           <>
-            <strong className="text-slate-900 dark:text-slate-100 font-bold">{attemptsLeft}</strong> tentativa{attemptsLeft !== 1 ? 's' : ''} restante{attemptsLeft !== 1 ? 's' : ''}
-            {isGuest && ' (modo convidado)'}
+            <strong className="text-slate-900 dark:text-slate-100 font-bold">{attemptsLeft}</strong>{' '}
+            {attemptsLeft === 1 ? t('attempt') : t('attempts')}{' '}
+            {attemptsLeft === 1 ? t('remaining') : t('remainingPlural')}
+            {isGuest && ` ${t('guestMode')}`}
           </>
         )}
       </span>

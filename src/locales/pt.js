@@ -35,4 +35,54 @@ export default {
   step2: '2. Clique no mapa onde você acha que está',
   step3: '3. Confirme seu palpite antes do tempo acabar',
   attemptsRemaining: 'Tentativas restantes',
+
+  // API Key Error (App.jsx)
+  apiKeyError: 'Adicione sua chave do Google Maps em um arquivo',
+  apiKeyWith: 'com:',
+  
+  // Attempts Counter (AttemptsCounter.jsx)
+  noAttemptsLeft: 'Sem tentativas restantes',
+  attempt: 'tentativa',
+  attempts: 'tentativas',
+  remaining: 'restante',
+  remainingPlural: 'restantes',
+  guestMode: '(modo convidado)',
+  
+  // Dark Mode Toggle (DarkModeToggle.jsx)
+  enableLightMode: 'Ativar modo claro',
+  enableDarkMode: 'Ativar modo escuro',
+  lightMode: 'Modo claro',
+  darkMode: 'Modo escuro',
+  
+  // Guess Feedback (GuessFeedback.jsx)
+  perfect: '🎯 Perfeito! Você acertou na mosca!',
+  excellent: '🌟 Excelente! Muito próximo!',
+  veryGood: '👏 Muito bom! Bom trabalho!',
+  good: '👍 Bom! Você está no caminho certo!',
+  fair: '😐 Razoável. Pode melhorar!',
+  weak: '😕 Fraco. Tente se aproximar mais!',
+  veryFar: '😢 Muito longe! Tente novamente!',
+  distanceBetweenPoints: 'Distância entre os pontos:',
+  scoreLabel: 'Pontuação:',
+  
+  // Guess History (GuessHistory.jsx)
+  perfectShort: 'Perfeito!',
+  excellentShort: 'Excelente',
+  veryGoodShort: 'Muito bom',
+  goodShort: 'Bom',
+  fairShort: 'Razoável',
+  weakShort: 'Fraco',
+  veryFarShort: 'Muito longe',
+  distanceLabel: 'Distância:',
+  pointsLabel: 'Pontos:',
+  guessLabel: 'Palpite:',
+  realLabel: 'Real:',
+  
+  // Language Toggle (LanguageToggle.jsx)
+  switchToEnglish: 'Switch to English',
+  switchToPortuguese: 'Mudar para Português',
+  
+  // Street View (StreetView.jsx)
+  generatingRandomPoint: 'Gerando um ponto aleatório...',
+  loadingStreetView: 'Carregando Street View. Aguarde um instante.',
 };
