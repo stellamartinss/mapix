@@ -1,17 +1,15 @@
 import { useCallback, useMemo, useState } from 'react';
 import LastGuesses from '../components/LastGuesses';
 import GuessMap from '../components/GuessMap';
-import Result from '../components/Result';
 import StreetView from '../components/StreetView';
-import AttemptsCounter from '../components/AttemptsCounter';
 import GuessFeedback from '../components/GuessFeedback';
 import StartScreen from '../components/StartScreen';
-import DarkModeToggle from '../components/DarkModeToggle';
 import LanguageToggle from '../components/LanguageToggle';
 import CountdownTimer from '../components/CountdownTimer';
 import RoundLimitReached from '../components/RoundLimitReached';
 import FloatingPanel from '../components/FloatingPanel';
 import FloatingButton from '../components/FloatingButton';
+import SettingsButton from '../components/SettingsButton';
 import { useAuth } from '../hooks/useAuth';
 import { useRoundLimit } from '../hooks/useRoundLimit';
 import { useTranslation } from '../hooks/useTranslation';
@@ -227,6 +225,8 @@ export default function GamePage() {
             <StartScreen
               onStart={handleStartGame}
               attemptsLeft={attemptsLeft}
+              setIsSettingsVisible={setIsSettingsVisible}
+              isSettingsVisible={isSettingsVisible}
             />
           </div>
         ) : (
@@ -285,14 +285,10 @@ export default function GamePage() {
             {!timerActive && (
               <PlayAgain onPlayAgain={handlePlayAgain} disabled={loading} />
             )}
-            <button
-              className='settings-btn'
-              onClick={() => setIsSettingsVisible(!isSettingsVisible)}
-              aria-label={t('settings') || 'Configurações'}
-              title={t('settings') || 'Configurações'}
-            >
-              ⚙️
-            </button>
+            <SettingsButton 
+              setIsSettingsVisible={setIsSettingsVisible}
+              isSettingsVisible={isSettingsVisible}
+            />
           </div>
           
           {/* Mobile: Feedback ocupa linha inteira abaixo */}
