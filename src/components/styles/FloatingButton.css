@@ -1,0 +1,132 @@
+.floating-btn {
+  position: fixed;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  color: white;
+  font-size: 24px;
+}
+
+.dark .floating-btn {
+  background: linear-gradient(135deg, #eab308 0%, #ca8a04 100%);
+}
+
+.floating-btn:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+}
+
+.floating-btn.active {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+}
+
+.floating-btn-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.floating-btn-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  background: #ef4444;
+  color: white;
+  border-radius: 12px;
+  padding: 2px 6px;
+  font-size: 12px;
+  font-weight: bold;
+  min-width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Position variants */
+.floating-btn-top-left {
+  top: 20px;
+  left: 20px;
+}
+
+.floating-btn-top-right {
+  top: 20px;
+  right: 20px;
+}
+
+.floating-btn-bottom-left {
+  bottom: 20px;
+  left: 20px;
+}
+
+.floating-btn-bottom-right {
+  bottom: 20px;
+  right: 20px;
+}
+
+.floating-btn-left-center {
+  left: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.floating-btn-left-center:hover {
+  transform: translateY(-50%) scale(1.1);
+}
+
+.floating-btn-right-center {
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.floating-btn-right-center:hover {
+  transform: translateY(-50%) scale(1.1);
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+  .floating-btn {
+    width: 48px;
+    height: 48px;
+    font-size: 20px;
+  }
+
+  .floating-btn-top-left,
+  .floating-btn-top-right {
+    top: 12px;
+  }
+
+  .floating-btn-top-left,
+  .floating-btn-bottom-left {
+    left: 12px;
+  }
+
+  .floating-btn-top-right,
+  .floating-btn-bottom-right {
+    right: 12px;
+  }
+
+  .floating-btn-bottom-left,
+  .floating-btn-bottom-right {
+    bottom: 12px;
+  }
+
+  .floating-btn-left-center {
+    left: 12px;
+  }
+
+  .floating-btn-right-center {
+    right: 12px;
+  }
+}

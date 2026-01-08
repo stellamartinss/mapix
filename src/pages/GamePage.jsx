@@ -10,6 +10,8 @@ import DarkModeToggle from '../components/DarkModeToggle';
 import LanguageToggle from '../components/LanguageToggle';
 import CountdownTimer from '../components/CountdownTimer';
 import RoundLimitReached from '../components/RoundLimitReached';
+import FloatingPanel from '../components/FloatingPanel';
+import FloatingButton from '../components/FloatingButton';
 import { useAuth } from '../hooks/useAuth';
 import { useRoundLimit } from '../hooks/useRoundLimit';
 import { useTranslation } from '../hooks/useTranslation';
@@ -21,21 +23,19 @@ import {
 import './styles/GamePage.css';
 import PlayAgain from '../components/PlayAgain';
 
-const pinMapStyle = {
-  position: 'fixed',
-  bottom: '0',
-  right: '0',
-  zIndex: '10',
-};
-
-const darkModeToggle = { position: 'absolute', top: '24px', right: '24px' };
-
 export default function GamePage() {
-  const [isHidden, setIsHidden] = useState(false);
-  const [displayLastGuesses, setDisplayLastGuesses] = useState(false);
+  const [isMapVisible, setIsMapVisible] = useState(false);
+  const [isHistoryVisible, setIsHistoryVisible] = useState(false);
+  const [isInfoVisible, setIsInfoVisible] = useState(false);
+  const [isSettingsVisible, setIsSettingsVisible] = useState(false);
 
   const { attemptsLeft } = useAuth();
-  const { hasReachedLimit, canPlayNewRound, incrementRounds, getRemainingRounds } = useRoundLimit();
+  const {
+    hasReachedLimit,
+    canPlayNewRound,
+    incrementRounds,
+    getRemainingRounds,
+  } = useRoundLimit();
   const { t } = useTranslation();
 
   const [realPosition, setRealPosition] = useState(null);
@@ -157,7 +157,6 @@ export default function GamePage() {
     setRealPosition(location);
     setLoading(false);
     setTimerActive(true);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleStartGame = useCallback(() => {
@@ -189,7 +188,7 @@ export default function GamePage() {
       },
       ...prev,
     ]);
-  }, [guessPosition, realPosition]);
+  }, [guessPosition, realPosition, incrementRounds]);
 
   const handleTimeout = useCallback(() => {
     setTimerActive(false);
@@ -201,127 +200,190 @@ export default function GamePage() {
     if (!canPlayNewRound()) {
       return;
     }
+    setIsMapVisible(false);
+    setIsHistoryVisible(false);
+    setIsInfoVisible(false);
     pickRandomStreetView();
   }, [pickRandomStreetView, canPlayNewRound]);
 
-  const handleHideToggle = () => {
-    setIsHidden((prev) => !prev);
-  };
+  const handleGuessConfirm = useCallback(() => {
+    handleGuess();
+    setIsMapVisible(false);
+  }, [handleGuess]);
 
   const linePath = useMemo(() => {
     if (!realPosition || !guessPosition || distanceKm === null) return [];
     return [realPosition, guessPosition];
   }, [distanceKm, realPosition, guessPosition]);
 
-  const onHandleDisplayLastGuesses = () => {
-    setDisplayLastGuesses((prev) => !prev);
-  };
-
   return (
-    <div class='min-h-screen grid place-items-center p-0 md:p-6'>
-      <div style={darkModeToggle}>
-        <div className='flex md:flex-row flex-col md:items-center items-start gap-2'>
-          <LanguageToggle />
-          <DarkModeToggle />
-        </div>
-      </div>
-      <div className='w-full flex flex-col gap-2 md:gap-8 px-0 md:px-0'>
-        {/* HEADER */}
-        <header className='flex md:flex-row flex-col md:items-center items-start justify-between gap-3 md:gap-6'>
-          <div className="px-2">
-            <p className='uppercase tracking-wide text-xs text-slate-300 m-0 mb-1'>
-              {t('appName')} {!hasReachedLimit && `• ${getRemainingRounds()} ${t('roundsRemaining')}`}
-            </p>
-            <h1 className='m-0 text-3xl font-bold text-slate-900 dark:text-white'>
-              {t('tagline')}
-            </h1>
-          </div>
-
-          <div className='flex md:flex-row flex-col items-center gap-3 md:w-auto w-full'>
-            {hasTimedOut && distanceKm === null && (
-              <div className="bg-red-500 text-white px-4 py-2 rounded-lg font-bold">
-                {t('timeout')}
-              </div>
-            )}
-            
-            <GuessFeedback distanceKm={distanceKm} score={lastScore} />
-
-            {realPosition && !loading && !timerActive && (
-              <PlayAgain onPlayAgain={handlePlayAgain} disabled={loading} />
-            )}
-          </div>
-        </header>
-
-        {/* STREET VIEW / START */}
-        <section
-          className={`${
-            !realPosition && !loading ? 'bg-white/10' : ''
-          } md:rounded-3xl p-0 md:p-6 flex flex-col gap-0 md:gap-3 -mx-0 md:mx-0`}
-        >
-          {hasReachedLimit ? (
+    <div className='game-container'>
+      {/* Full-screen Street View */}
+      <div className='streetview-fullscreen'>
+        {hasReachedLimit ? (
+          <div className='overlay-message'>
             <RoundLimitReached />
-          ) : !realPosition && !loading ? (
+          </div>
+        ) : !realPosition && !loading ? (
+          <div className='overlay-message'>
             <StartScreen
               onStart={handleStartGame}
               attemptsLeft={attemptsLeft}
             />
-          ) : (
-            <div className='flex md:flex-row flex-col w-full gap-0 md:gap-4'>
-              <div className='md:w-[80%] w-full relative'>
-                <StreetView position={realPosition} loading={loading} />
-                <div className='absolute top-4 left-4 z-10'>
-                  <CountdownTimer 
-                    duration={75} 
-                    onTimeout={handleTimeout} 
-                    isActive={timerActive}
-                  />
-                </div>
-              </div>
-
-              <div className='md:w-[20%] w-full'>
-                <LastGuesses
-                  history={history}
-                  onHandleDisplayLastGuesses={onHandleDisplayLastGuesses}
-                />
-              </div>
-            </div>
-          )}
-        </section>
-
-        {/* CLASSIC MODE */}
-        {realPosition && !loading && (
-          <div className='w-full flex justify-center'>
-            {isHidden ? (
-              <section
-                className='rounded-2xl p-0 md:p-6 shadow-xl flex flex-col gap-4 w-full left-0 md:w-[500px] md:left-auto md:right-0'
-                style={pinMapStyle}
-              >
-                <GuessMap
-                  guessPosition={guessPosition}
-                  realPosition={realPosition}
-                  showResult={distanceKm !== null}
-                  linePath={linePath}
-                  onGuess={setGuessPosition}
-                  onConfirm={handleGuess}
-                  disableConfirm={!guessPosition || loading || hasReachedLimit}
-                  disableInteraction={hasReachedLimit}
-                  distanceKm={distanceKm}
-                  onHideToggle={handleHideToggle}
-                />
-              </section>
-            ) : (
-              <section className='w-full md:w-auto flex justify-end mb-4 mr-4' style={pinMapStyle}>
-                <button
-                  onClick={handleHideToggle}
-                  className='dark:bg-yellow-500 bg-green-500 dark:hover:bg-yellow-600 hover:bg-green-700 rounded-lg px-4 py-3 transition-all hover:shadow-xl text-white'
-                >
-                  <div className='text-6xl'>🗺️</div>
-                </button>
-              </section>
-            )}
           </div>
+        ) : (
+          <>
+            <StreetView position={realPosition} loading={loading} />
+
+            {/* Countdown Timer - Top Left */}
+            {timerActive && (
+              <div className='timer-overlay'>
+                <CountdownTimer
+                  duration={75}
+                  onTimeout={handleTimeout}
+                  isActive={timerActive}
+                />
+              </div>
+            )}
+
+            {/* Timeout Message - Center */}
+            {hasTimedOut && distanceKm === null && (
+              <div className='timeout-overlay'>
+                <div className='timeout-message'>{t('timeout')}</div>
+              </div>
+            )}
+          </>
         )}
       </div>
+
+      {/* Floating Action Buttons */}
+      {realPosition && !loading && (
+        <>
+          {/* Map Toggle Button - Bottom Right */}
+          <FloatingButton
+            icon='🗺️'
+            label={t('map') || 'Mapa'}
+            position='bottom-right'
+            onClick={() => setIsMapVisible(!isMapVisible)}
+            active={isMapVisible}
+          />
+
+          {/* History Button - Bottom Left */}
+          <FloatingButton
+            icon='📜'
+            label={t('history') || 'Histórico'}
+            position='bottom-left'
+            onClick={() => setIsHistoryVisible(!isHistoryVisible)}
+            badge={history.length > 0 ? history.length : null}
+            active={isHistoryVisible}
+          />
+
+          {/* Info/Score Button - Top Left */}
+          {(distanceKm !== null || hasTimedOut) && (
+            <FloatingButton
+              icon='ℹ️'
+              label={t('info') || 'Informações'}
+              position='top-left'
+              onClick={() => setIsInfoVisible(!isInfoVisible)}
+              active={isInfoVisible}
+            />
+          )}
+
+          {/* Settings Button - Top Right */}
+          <FloatingButton
+            icon='⚙️'
+            label={t('settings') || 'Configurações'}
+            position='top-right'
+            onClick={() => setIsSettingsVisible(!isSettingsVisible)}
+            active={isSettingsVisible}
+          />
+        </>
+      )}
+
+      {/* Floating Panel - Map */}
+      {realPosition && !loading && (
+        <FloatingPanel
+          isOpen={isMapVisible}
+          onClose={() => setIsMapVisible(false)}
+          position='right'
+          title={t('makeYourGuess') || 'Faça seu palpite'}
+        >
+          <GuessMap
+            isOpen={isMapVisible}
+            onClose={() => setIsMapVisible(false)}
+            position='right'
+            guessPosition={guessPosition}
+            realPosition={realPosition}
+            showResult={distanceKm !== null}
+            linePath={linePath}
+            onGuess={setGuessPosition}
+            onConfirm={handleGuessConfirm}
+            disableConfirm={!guessPosition || loading || hasReachedLimit}
+            disableInteraction={hasReachedLimit}
+            distanceKm={distanceKm}
+          />
+        </FloatingPanel>
+      )}
+
+      {/* Floating Panel - History */}
+      <FloatingPanel
+        isOpen={isHistoryVisible}
+        onClose={() => setIsHistoryVisible(false)}
+        position='left'
+        title={t('lastGuesses') || 'Últimos palpites'}
+      >
+        <LastGuesses history={history} />
+      </FloatingPanel>
+
+      {/* Floating Panel - Info/Score */}
+      <FloatingPanel
+        isOpen={isInfoVisible}
+        onClose={() => setIsInfoVisible(false)}
+        position='top'
+        title={t('gameInfo') || 'Informações do jogo'}
+      >
+        <div className='info-panel-content'>
+          <div className='info-section'>
+            <p className='info-label'>{t('appName')}</p>
+            {!hasReachedLimit && (
+              <p className='info-value'>
+                {getRemainingRounds()} {t('roundsRemaining')}
+              </p>
+            )}
+          </div>
+
+          {distanceKm !== null && (
+            <div className='info-section'>
+              <GuessFeedback distanceKm={distanceKm} score={lastScore} />
+            </div>
+          )}
+
+          {realPosition && !loading && !timerActive && (
+            <div className='info-section'>
+              <PlayAgain onPlayAgain={handlePlayAgain} disabled={loading} />
+            </div>
+          )}
+        </div>
+      </FloatingPanel>
+
+      {/* Floating Panel - Settings */}
+      <FloatingPanel
+        isOpen={isSettingsVisible}
+        onClose={() => setIsSettingsVisible(false)}
+        position='top'
+        title={t('settings') || 'Configurações'}
+      >
+        <div className='settings-panel-content'>
+          <div className='setting-item'>
+            <label>{t('language') || 'Idioma'}</label>
+            <LanguageToggle />
+          </div>
+          {/* <div className="setting-item">
+            <label>{t('theme') || 'Tema'}</label>
+            <DarkModeToggle />
+          </div> */}
+        </div>
+      </FloatingPanel>
     </div>
   );
 }

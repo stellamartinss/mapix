@@ -1,27 +1,17 @@
 import { useState, useEffect } from 'react';
 
 export function useDarkMode() {
-  const [isDark, setIsDark] = useState(() => {
-    // Verificar localStorage primeiro
-    const saved = localStorage.getItem('darkMode');
-    if (saved !== null) {
-      return saved === 'true';
-    }
-    // Senão, verificar preferência do sistema
-    return window.matchMedia('(prefers-color-scheme: dark)').matches;
-  });
+  // Always return dark mode as true
+  const [isDark] = useState(true);
 
   useEffect(() => {
-    const root = document.documentElement;
-    if (isDark) {
-      root.classList.add('dark');
-    } else {
-      root.classList.remove('dark');
-    }
-    localStorage.setItem('darkMode', isDark);
-  }, [isDark]);
+    // Force dark mode on mount
+    document.documentElement.classList.add('dark');
+    localStorage.setItem('darkMode', 'true');
+  }, []);
 
-  const toggleDarkMode = () => setIsDark(!isDark);
+  // Toggle does nothing - always stays dark
+  const toggleDarkMode = () => {};
 
   return { isDark, toggleDarkMode };
 }

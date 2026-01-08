@@ -85,4 +85,14 @@ export default {
   // Street View (StreetView.jsx)
   generatingRandomPoint: 'Gerando um ponto aleatório...',
   loadingStreetView: 'Carregando Street View. Aguarde um instante.',
+
+  // Floating UI
+  map: 'Mapa',
+  history: 'Histórico',
+  info: 'Informações',
+  settings: 'Configurações',
+  makeYourGuess: 'Faça seu palpite',
+  gameInfo: 'Informações do jogo',
+  language: 'Idioma',
+  theme: 'Tema',
 };

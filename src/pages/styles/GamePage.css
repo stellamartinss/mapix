@@ -1,3 +1,155 @@
 .writing-vertical-rl {
   writing-mode: vertical-rl;
 }
+
+/* Full-screen immersive layout */
+.game-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.streetview-fullscreen {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+/* Overlay messages */
+.overlay-message {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+  width: 90%;
+  max-width: 600px;
+}
+
+.timer-overlay {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  z-index: 100;
+}
+
+.timeout-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 100;
+}
+
+.timeout-message {
+  background: #ef4444;
+  color: white;
+  padding: 16px 32px;
+  border-radius: 12px;
+  font-weight: bold;
+  font-size: 20px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+/* Info Panel Content */
+.info-panel-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.info-section {
+  padding: 16px;
+  background: rgba(0, 0, 0, 0.02);
+  border-radius: 12px;
+}
+
+.dark .info-section {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.info-label {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #64748b;
+  margin: 0 0 4px 0;
+  font-weight: 600;
+}
+
+.dark .info-label {
+  color: #94a3b8;
+}
+
+.info-value {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1e293b;
+  margin: 0;
+}
+
+.dark .info-value {
+  color: #f1f5f9;
+}
+
+/* Settings Panel Content */
+.settings-panel-content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.setting-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  background: rgba(0, 0, 0, 0.02);
+  border-radius: 12px;
+}
+
+.dark .setting-item {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.setting-item label {
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.dark .setting-item label {
+  color: #f1f5f9;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .timer-overlay {
+    top: 12px;
+    left: 12px;
+  }
+
+  .timeout-message {
+    font-size: 16px;
+    padding: 12px 24px;
+  }
+
+  .overlay-message {
+    width: 95%;
+  }
+}

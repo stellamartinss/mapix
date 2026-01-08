@@ -1,6 +1,6 @@
 {
-  "name": "Mapix - Jogo de Geografia",
-  "short_name": "Mapix",
+  "name": "Mapin - Jogo de Geografia",
+  "short_name": "Mapin",
   "description": "Jogo de geografia online gratuito estilo GeoGuessr com Street View",
   "start_url": "/",
   "display": "standalone",

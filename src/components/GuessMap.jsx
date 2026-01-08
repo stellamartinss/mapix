@@ -4,7 +4,8 @@ import { useTranslation } from '../hooks/useTranslation';
 
 const containerStyle = {
   width: '100%',
-  height: '320px',
+  height: '450px',
+  minHeight: '400px',
   borderRadius: '12px',
   overflow: 'hidden',
   position: 'relative',
@@ -21,7 +22,6 @@ function GuessMap({
   onConfirm,
   disableConfirm,
   distanceKm,
-  onHideToggle,
   disableInteraction,
 }) {
   const { t } = useTranslation();
@@ -65,21 +65,6 @@ function GuessMap({
           />
         ) : null}
       </GoogleMap>
-      {onHideToggle && (
-        <button
-          type='button'
-          onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            onHideToggle();
-          }}
-          className='absolute top-4 right-4 px-3 py-1 text-lg rounded-full bg-slate-600 hover:bg-yellow-700 text-white hover:text-slate-600 
-                 text-white'
-          style={{ zIndex: 1000 }}
-        >
-          ×
-        </button>
-      )}
       {distanceKm === null && (
         <button
           type='button'
@@ -111,7 +96,6 @@ GuessMap.propTypes = {
   onConfirm: PropTypes.func,
   disableConfirm: PropTypes.bool,
   distanceKm: PropTypes.number,
-  onHideToggle: PropTypes.func,
   disableInteraction: PropTypes.bool,
 };
 
@@ -121,7 +105,6 @@ GuessMap.defaultProps = {
   onConfirm: undefined,
   disableConfirm: true,
   distanceKm: null,
-  onHideToggle: undefined,
   disableInteraction: false,
 };
 
