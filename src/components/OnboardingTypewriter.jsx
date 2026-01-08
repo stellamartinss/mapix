@@ -74,16 +74,16 @@ function OnboardingTypewriter({ onComplete }) {
     return () => clearInterval(typingInterval);
   }, [currentMessageIndex, messages, TYPING_SPEED, MESSAGE_DELAY]);
 
-  const handleCTAClick = useCallback(() => {
-    onComplete();
-  }, [onComplete]);
+  // const handleCTAClick = useCallback(() => {
+  //   onComplete();
+  // }, [onComplete]);
 
   return (
     <div className='onboarding-container'>
       <div className='onboarding-text'>
          <>
             {displayedText}
-            {showCursor && <span className='onboarding-cursor'>|</span>}
+            {showCursor && <span className='onboarding-cursor'>_</span>}
           </>
       </div>
     </div>

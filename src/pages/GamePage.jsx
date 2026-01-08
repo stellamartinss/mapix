@@ -216,7 +216,7 @@ export default function GamePage() {
 
   return (
     <div className='game-container'>
-      {setIsSettingsVisible && (
+      {!realPosition && !loading && !hasReachedLimit && setIsSettingsVisible && (
         <div
           style={{
             position: 'absolute',
@@ -311,6 +311,14 @@ export default function GamePage() {
             {!timerActive && (
               <PlayAgain onPlayAgain={handlePlayAgain} disabled={loading} />
             )}
+            <HowToPlayButton
+              setIsHowToPlayVisible={setIsHowToPlayVisible}
+              isHowToPlayVisible={isHowToPlayVisible}
+            />
+            <SettingsButton
+              setIsSettingsVisible={setIsSettingsVisible}
+              isSettingsVisible={isSettingsVisible}
+            />
           </div>
 
           {/* Mobile: Feedback ocupa linha inteira abaixo */}

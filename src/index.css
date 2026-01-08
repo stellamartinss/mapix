@@ -35,6 +35,7 @@
 
   body {
     margin: 0;
+    font-family: 'Courier New', 'Courier', 'Monaco', 'Lucida Console', monospace;
     min-height: 100vh;
     background: linear-gradient(to bottom right, rgba(224, 231, 255, 0.4), rgba(199, 249, 204, 0.4), rgba(255, 233, 163, 0.4));
     color: #0f172a;
