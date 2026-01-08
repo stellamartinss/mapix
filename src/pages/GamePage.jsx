@@ -26,7 +26,6 @@ import PlayAgain from '../components/PlayAgain';
 export default function GamePage() {
   const [isMapVisible, setIsMapVisible] = useState(false);
   const [isHistoryVisible, setIsHistoryVisible] = useState(false);
-  const [isInfoVisible, setIsInfoVisible] = useState(false);
   const [isSettingsVisible, setIsSettingsVisible] = useState(false);
 
   const { attemptsLeft } = useAuth();
@@ -202,7 +201,6 @@ export default function GamePage() {
     }
     setIsMapVisible(false);
     setIsHistoryVisible(false);
-    setIsInfoVisible(false);
     pickRandomStreetView();
   }, [pickRandomStreetView, canPlayNewRound]);
 
@@ -256,6 +254,48 @@ export default function GamePage() {
         )}
       </div>
 
+      {/* Always Visible Game Info Bar - Top */}
+      {realPosition && !loading && (
+        <div className='game-info-bar'>
+          <div className='game-info-left'>
+            <div className='game-info-item'>
+              <span className='game-info-label'>{t('appName')}</span>
+              {!hasReachedLimit && (
+                <span className='game-info-value'>
+                  {getRemainingRounds()} {t('roundsRemaining')}
+                </span>
+              )}
+            </div>
+            
+            {distanceKm !== null && (
+              <div className='game-info-item game-info-feedback'>
+                <GuessFeedback distanceKm={distanceKm} score={lastScore} />
+              </div>
+            )}
+            
+            {hasTimedOut && distanceKm === null && (
+              <div className='game-info-item game-info-timeout'>
+                <span className='timeout-badge'>{t('timeout')}</span>
+              </div>
+            )}
+          </div>
+          
+          <div className='game-info-right'>
+            {!timerActive && (
+              <PlayAgain onPlayAgain={handlePlayAgain} disabled={loading} />
+            )}
+            <button
+              className='settings-btn'
+              onClick={() => setIsSettingsVisible(!isSettingsVisible)}
+              aria-label={t('settings') || 'Configurações'}
+              title={t('settings') || 'Configurações'}
+            >
+              ⚙️
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Floating Action Buttons */}
       {realPosition && !loading && (
         <>
@@ -266,6 +306,7 @@ export default function GamePage() {
             position='bottom-right'
             onClick={() => setIsMapVisible(!isMapVisible)}
             active={isMapVisible}
+            showText={true}
           />
 
           {/* History Button - Bottom Left */}
@@ -276,26 +317,7 @@ export default function GamePage() {
             onClick={() => setIsHistoryVisible(!isHistoryVisible)}
             badge={history.length > 0 ? history.length : null}
             active={isHistoryVisible}
-          />
-
-          {/* Info/Score Button - Top Left */}
-          {(distanceKm !== null || hasTimedOut) && (
-            <FloatingButton
-              icon='ℹ️'
-              label={t('info') || 'Informações'}
-              position='top-left'
-              onClick={() => setIsInfoVisible(!isInfoVisible)}
-              active={isInfoVisible}
-            />
-          )}
-
-          {/* Settings Button - Top Right */}
-          <FloatingButton
-            icon='⚙️'
-            label={t('settings') || 'Configurações'}
-            position='top-right'
-            onClick={() => setIsSettingsVisible(!isSettingsVisible)}
-            active={isSettingsVisible}
+            showText={true}
           />
         </>
       )}
@@ -330,40 +352,9 @@ export default function GamePage() {
         isOpen={isHistoryVisible}
         onClose={() => setIsHistoryVisible(false)}
         position='left'
-        title={t('lastGuesses') || 'Últimos palpites'}
+        title={t('lastGuesses')}
       >
         <LastGuesses history={history} />
-      </FloatingPanel>
-
-      {/* Floating Panel - Info/Score */}
-      <FloatingPanel
-        isOpen={isInfoVisible}
-        onClose={() => setIsInfoVisible(false)}
-        position='top'
-        title={t('gameInfo') || 'Informações do jogo'}
-      >
-        <div className='info-panel-content'>
-          <div className='info-section'>
-            <p className='info-label'>{t('appName')}</p>
-            {!hasReachedLimit && (
-              <p className='info-value'>
-                {getRemainingRounds()} {t('roundsRemaining')}
-              </p>
-            )}
-          </div>
-
-          {distanceKm !== null && (
-            <div className='info-section'>
-              <GuessFeedback distanceKm={distanceKm} score={lastScore} />
-            </div>
-          )}
-
-          {realPosition && !loading && !timerActive && (
-            <div className='info-section'>
-              <PlayAgain onPlayAgain={handlePlayAgain} disabled={loading} />
-            </div>
-          )}
-        </div>
       </FloatingPanel>
 
       {/* Floating Panel - Settings */}

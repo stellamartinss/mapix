@@ -1,4 +1,5 @@
 import { useTranslation } from '../hooks/useTranslation';
+import './styles/PlayAgain.css';
 
 function PlayAgain({ onPlayAgain, disableConfirm }) {
   const { t } = useTranslation();
@@ -8,7 +9,7 @@ function PlayAgain({ onPlayAgain, disableConfirm }) {
       type='button'
       onClick={onPlayAgain}
       disabled={disableConfirm}
-      className='dark:bg-yellow-500 bg-green-500 dark:hover:bg-yellow-600 hover:bg-green-600 rounded-lg px-4 py-3 font-semibold text-white transition-all hover:shadow-lg disabled:opacity-60 disabled:cursor-not-allowed'
+      className='play-again-btn'
     >
       {t('playAgain')}
     </button>

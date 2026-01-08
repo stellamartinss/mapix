@@ -1,33 +1,36 @@
 import { useTranslation } from '../hooks/useTranslation';
+import './styles/GuessFeedback.css';
 
 function GuessFeedback({ distanceKm, score }) {
   const { t } = useTranslation();
   
   const getFeedback = (score) => {
-    if (score >= 4900) return { text: t('perfect'), color: 'text-green-600 dark:text-green-400' };
-    if (score >= 4500) return { text: t('excellent'), color: 'text-green-600 dark:text-green-400' };
-    if (score >= 4000) return { text: t('veryGood'), color: 'text-blue-600 dark:text-blue-400' };
-    if (score >= 3000) return { text: t('good'), color: 'text-blue-600 dark:text-blue-400' };
-    if (score >= 2000) return { text: t('fair'), color: 'text-yellow-600 dark:text-yellow-400' };
-    if (score >= 1000) return { text: t('weak'), color: 'text-orange-600 dark:text-orange-400' };
-    return { text: t('veryFar'), color: 'text-red-600 dark:text-red-400' };
+    if (score >= 4900) return { text: t('perfect'), color: 'feedback-green' };
+    if (score >= 4500) return { text: t('excellent'), color: 'feedback-green' };
+    if (score >= 4000) return { text: t('veryGood'), color: 'feedback-blue' };
+    if (score >= 3000) return { text: t('good'), color: 'feedback-blue' };
+    if (score >= 2000) return { text: t('fair'), color: 'feedback-yellow' };
+    if (score >= 1000) return { text: t('weak'), color: 'feedback-orange' };
+    return { text: t('veryFar'), color: 'feedback-red' };
   };
 
   const feedback = distanceKm !== null ? getFeedback(score) : null;
 
   return (
-    <div className='text-slate-900 dark:text-slate-100'>
+    <div className='guess-feedback-container'>
       {distanceKm === null ? (
         <></>
       ) : (
-        <div className='py-3 px-5 bg-slate-100 dark:bg-slate-800 rounded-xl text-sm'>
-          <p className='text-slate-600 dark:text-slate-300'>
-            {t('distanceBetweenPoints')}{' '}
-            <strong>{distanceKm.toFixed(2)} km</strong> · {t('scoreLabel')}{' '}
-            <strong>{score}</strong>
+        <div className='guess-feedback-content'>
+          <p className='guess-feedback-stats'>
+            <span className='guess-feedback-label'>{t('distanceBetweenPoints')}</span>{' '}
+            <strong className='guess-feedback-value'>{distanceKm.toFixed(2)} km</strong>
+            <span className='guess-feedback-separator'>·</span>
+            <span className='guess-feedback-label'>{t('scoreLabel')}</span>{' '}
+            <strong className='guess-feedback-value'>{score}</strong>
           </p>
           {feedback && (
-            <p className={`mt-2 font-semibold ${feedback.color}`}>
+            <p className={`guess-feedback-message ${feedback.color}`}>
               {feedback.text}
             </p>
           )}

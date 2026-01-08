@@ -1,0 +1,45 @@
+.play-again-btn {
+  background: linear-gradient(135deg, #eab308 0%, #ca8a04 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 20px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  white-space: nowrap;
+}
+
+.play-again-btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, #ca8a04 0%, #a16207 100%);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  transform: translateY(-1px);
+}
+
+.play-again-btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.play-again-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Mobile optimization */
+@media (max-width: 768px) {
+  .play-again-btn {
+    padding: 10px 16px;
+    font-size: 13px;
+    border-radius: 6px;
+  }
+}
+
+@media (max-width: 480px) {
+  .play-again-btn {
+    padding: 8px 14px;
+    font-size: 12px;
+    border-radius: 6px;
+  }
+}

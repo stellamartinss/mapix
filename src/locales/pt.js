@@ -6,7 +6,7 @@ export default {
 
   // Buttons
   startGame: 'Começar Jogo',
-  playAgain: 'Descobrir outro lugar',
+  playAgain: 'Tentar Novamente',
   confirmGuess: 'É aqui!',
   tryTomorrow: '🔄 Tentar novamente amanhã',
   upgrade: '⭐ Fazer upgrade (em breve)',

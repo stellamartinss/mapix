@@ -1,14 +1,11 @@
 import { GoogleMap, Marker, Polyline } from '@react-google-maps/api';
 import PropTypes from 'prop-types';
 import { useTranslation } from '../hooks/useTranslation';
+import './styles/GuessMap.css';
 
 const containerStyle = {
   width: '100%',
-  height: '450px',
-  minHeight: '400px',
-  borderRadius: '12px',
-  overflow: 'hidden',
-  position: 'relative',
+  height: '100%',
 };
 
 const defaultCenter = { lat: 0, lng: 0 };
@@ -36,7 +33,7 @@ function GuessMap({
   };
 
   return (
-    <div className='map-wrapper relative' style={{ position: 'relative' }}>
+    <div className='guess-map-container'>
       <GoogleMap
         mapContainerStyle={containerStyle}
         center={defaultCenter}
@@ -70,7 +67,7 @@ function GuessMap({
           type='button'
           onClick={onConfirm}
           disabled={disableConfirm}
-          className='absolute bottom-4 right-4 bg-yellow-600 hover:bg-yellow-700 rounded-lg px-4 py-3 font-semibold text-white transition-all hover:translate-y-[-1px] hover:shadow-lg disabled:opacity-60 disabled:cursor-not-allowed z-10'
+          className='guess-map-confirm-btn'
         >
           {t('confirmGuess')}
         </button>
