@@ -228,6 +228,15 @@
   animation: pulseBadge 2s infinite;
 }
 
+/* Desktop: Mostrar feedback inline, esconder mobile */
+.game-info-feedback-desktop {
+  display: flex;
+}
+
+.game-info-feedback-mobile {
+  display: none;
+}
+
 @keyframes pulseBadge {
   0%, 100% {
     opacity: 1;
@@ -244,29 +253,65 @@
   .game-info-bar {
     padding: 10px 12px;
     right: 0;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 8px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto;
+    gap: 10px;
     min-height: auto;
   }
 
   .game-info-left {
-    gap: 16px;
+    grid-column: 1;
+    grid-row: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    align-items: flex-start;
+  }
+  
+  .game-info-item {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 5px;
+  }
+  
+  /* Hide desktop feedback on mobile */
+  .game-info-feedback-desktop {
+    display: none !important;
   }
 
   .game-info-right {
-    width: 100%;
+    grid-column: 2;
+    grid-row: 1;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
     justify-content: flex-end;
+    gap: 8px;
+  }
+  
+  /* Show mobile feedback - takes full width on second row */
+  .game-info-bar .game-info-feedback-mobile {
+    display: block;
+    grid-column: 1 / -1;
+    grid-row: 2;
   }
 
   .settings-btn {
     width: 36px;
     height: 36px;
     font-size: 18px;
+    flex-shrink: 0;
   }
 
   .game-info-label {
     font-size: 9px;
+  }
+  
+  .game-info-label::after {
+    content: ':';
+    margin-left: 2px;
   }
 
   .game-info-value {
@@ -279,8 +324,7 @@
   }
 
   .timer-overlay {
-    top: 120px; /* More space on mobile due to taller info bar */
+    top: 140px;
     left: 12px;
   }
 }
-

@@ -206,7 +206,7 @@ export default function GamePage() {
 
   const handleGuessConfirm = useCallback(() => {
     handleGuess();
-    setIsMapVisible(false);
+    // Keep map visible after confirming guess
   }, [handleGuess]);
 
   const linePath = useMemo(() => {
@@ -267,8 +267,9 @@ export default function GamePage() {
               )}
             </div>
             
+            {/* Desktop: Feedback fica aqui ao lado */}
             {distanceKm !== null && (
-              <div className='game-info-item game-info-feedback'>
+              <div className='game-info-item game-info-feedback game-info-feedback-desktop'>
                 <GuessFeedback distanceKm={distanceKm} score={lastScore} />
               </div>
             )}
@@ -293,6 +294,13 @@ export default function GamePage() {
               ⚙️
             </button>
           </div>
+          
+          {/* Mobile: Feedback ocupa linha inteira abaixo */}
+          {distanceKm !== null && (
+            <div className='game-info-feedback-mobile'>
+              <GuessFeedback distanceKm={distanceKm} score={lastScore} />
+            </div>
+          )}
         </div>
       )}
 
@@ -307,6 +315,7 @@ export default function GamePage() {
             onClick={() => setIsMapVisible(!isMapVisible)}
             active={isMapVisible}
             showText={true}
+            disabled={hasTimedOut}
           />
 
           {/* History Button - Bottom Left */}

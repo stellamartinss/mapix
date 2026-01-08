@@ -8,7 +8,8 @@ export default function FloatingButton({
   position = 'bottom-right',
   badge,
   active = false,
-  showText = false
+  showText = false,
+  disabled = false
 }) {
   return (
     <button
@@ -16,6 +17,7 @@ export default function FloatingButton({
       className={`floating-btn panel-toggle-btn floating-btn-${position} ${active ? 'active' : ''} ${showText ? 'floating-btn-with-text' : ''}`}
       aria-label={label}
       title={label}
+      disabled={disabled}
     >
       <span className="floating-btn-icon">{icon}</span>
       {showText && <span className="floating-btn-label">{label}</span>}
@@ -38,5 +40,6 @@ FloatingButton.propTypes = {
   ]),
   badge: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   active: PropTypes.bool,
-  showText: PropTypes.bool
+  showText: PropTypes.bool,
+  disabled: PropTypes.bool
 };
