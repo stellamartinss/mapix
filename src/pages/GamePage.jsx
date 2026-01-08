@@ -10,6 +10,7 @@ import RoundLimitReached from '../components/RoundLimitReached';
 import FloatingPanel from '../components/FloatingPanel';
 import FloatingButton from '../components/FloatingButton';
 import SettingsButton from '../components/SettingsButton';
+import HowToPlayButton from '../components/HowToPlayButton';
 import { useAuth } from '../hooks/useAuth';
 import { useRoundLimit } from '../hooks/useRoundLimit';
 import { useTranslation } from '../hooks/useTranslation';
@@ -25,6 +26,7 @@ export default function GamePage() {
   const [isMapVisible, setIsMapVisible] = useState(false);
   const [isHistoryVisible, setIsHistoryVisible] = useState(false);
   const [isSettingsVisible, setIsSettingsVisible] = useState(false);
+  const [isHowToPlayVisible, setIsHowToPlayVisible] = useState(false);
 
   const { attemptsLeft } = useAuth();
   const {
@@ -214,6 +216,27 @@ export default function GamePage() {
 
   return (
     <div className='game-container'>
+      {setIsSettingsVisible && (
+        <div
+          style={{
+            position: 'absolute',
+            top: '20px',
+            right: '20px',
+            zIndex: 1000,
+            display: 'flex',
+            gap: '8px',
+          }}
+        >
+          <HowToPlayButton
+            setIsHowToPlayVisible={setIsHowToPlayVisible}
+            isHowToPlayVisible={isHowToPlayVisible}
+          />
+          <SettingsButton
+            setIsSettingsVisible={setIsSettingsVisible}
+            isSettingsVisible={isSettingsVisible}
+          />
+        </div>
+      )}
       {/* Full-screen Street View */}
       <div className='streetview-fullscreen'>
         {hasReachedLimit ? (
@@ -227,6 +250,8 @@ export default function GamePage() {
               attemptsLeft={attemptsLeft}
               setIsSettingsVisible={setIsSettingsVisible}
               isSettingsVisible={isSettingsVisible}
+              setIsHowToPlayVisible={setIsHowToPlayVisible}
+              isHowToPlayVisible={isHowToPlayVisible}
             />
           </div>
         ) : (
@@ -237,6 +262,7 @@ export default function GamePage() {
             {timerActive && (
               <div className='timer-overlay'>
                 <CountdownTimer
+                  key={realPosition?.lat + '-' + realPosition?.lng}
                   duration={75}
                   onTimeout={handleTimeout}
                   isActive={timerActive}
@@ -266,31 +292,27 @@ export default function GamePage() {
                 </span>
               )}
             </div>
-            
+
             {/* Desktop: Feedback fica aqui ao lado */}
             {distanceKm !== null && (
               <div className='game-info-item game-info-feedback game-info-feedback-desktop'>
                 <GuessFeedback distanceKm={distanceKm} score={lastScore} />
               </div>
             )}
-            
+
             {hasTimedOut && distanceKm === null && (
               <div className='game-info-item game-info-timeout'>
                 <span className='timeout-badge'>{t('timeout')}</span>
               </div>
             )}
           </div>
-          
+
           <div className='game-info-right'>
             {!timerActive && (
               <PlayAgain onPlayAgain={handlePlayAgain} disabled={loading} />
             )}
-            <SettingsButton 
-              setIsSettingsVisible={setIsSettingsVisible}
-              isSettingsVisible={isSettingsVisible}
-            />
           </div>
-          
+
           {/* Mobile: Feedback ocupa linha inteira abaixo */}
           {distanceKm !== null && (
             <div className='game-info-feedback-mobile'>
@@ -378,6 +400,72 @@ export default function GamePage() {
             <label>{t('theme') || 'Tema'}</label>
             <DarkModeToggle />
           </div> */}
+        </div>
+      </FloatingPanel>
+
+      {/* Floating Panel - How to Play */}
+      <FloatingPanel
+        isOpen={isHowToPlayVisible}
+        onClose={() => setIsHowToPlayVisible(false)}
+        position='top'
+        title={t('howToPlayTitle') || 'Como Jogar'}
+      >
+        <div className='how-to-play-content'>
+          <p className='how-to-play-intro'>
+            {t('howToPlayIntro') ||
+              'Bem-vindo ao Mapin! Seu objetivo é identificar o local mostrado no Street View.'}
+          </p>
+
+          <div className='how-to-play-step'>
+            <div className='how-to-play-step-title'>
+              {t('howToPlayStep1Title') || '1️⃣ Observe'}
+            </div>
+            <div className='how-to-play-step-desc'>
+              {t('howToPlayStep1Desc') ||
+                'Examine cuidadosamente a imagem do Street View. Procure por pontos de referência, placas, arquitetura, vegetação e qualquer pista visual.'}
+            </div>
+          </div>
+
+          <div className='how-to-play-step'>
+            <div className='how-to-play-step-title'>
+              {t('howToPlayStep2Title') || '2️⃣ Analise'}
+            </div>
+            <div className='how-to-play-step-desc'>
+              {t('howToPlayStep2Desc') ||
+                'Use as pistas disponíveis para reduzir as possíveis localizações. Pense no país, região ou cidade.'}
+            </div>
+          </div>
+
+          <div className='how-to-play-step'>
+            <div className='how-to-play-step-title'>
+              {t('howToPlayStep3Title') || '3️⃣ Marque'}
+            </div>
+            <div className='how-to-play-step-desc'>
+              {t('howToPlayStep3Desc') ||
+                'Clique no mapa onde você acha que é a localização. Seja o mais preciso possível.'}
+            </div>
+          </div>
+
+          <div className='how-to-play-step'>
+            <div className='how-to-play-step-title'>
+              {t('howToPlayStep4Title') || '4️⃣ Confirme'}
+            </div>
+            <div className='how-to-play-step-desc'>
+              {t('howToPlayStep4Desc') ||
+                'Clique em "É aqui!" para enviar seu palpite antes do tempo acabar (75 segundos).'}
+            </div>
+          </div>
+
+          <div className='how-to-play-footer'>
+            <p>
+              {t('howToPlayScoring') ||
+                '🎯 Pontuação: Quanto mais próximo seu palpite, maior sua pontuação! Palpites perfeitos ganham pontos máximos.'}
+            </p>
+            <p>
+              {t('howToPlayTips') ||
+                '💡 Dicas: Preste atenção no idioma das placas, tipos de veículos, paisagem e estilo arquitetônico.'}
+            </p>
+          </div>
         </div>
       </FloatingPanel>
     </div>

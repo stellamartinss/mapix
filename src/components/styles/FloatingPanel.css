@@ -94,7 +94,7 @@
 }
 
 .dark .floating-panel-title {
-  color: #f1f5f9;
+  color: #1e293b;
 }
 
 .floating-panel-close {
@@ -102,7 +102,7 @@
   border: none;
   font-size: 24px;
   cursor: pointer;
-  color: #cfd1d5;
+  color: #1e293b;
   padding: 0;
   width: 32px;
   height: 32px;

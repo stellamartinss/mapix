@@ -1,7 +1,18 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 
 export default function CountdownTimer({ duration, onTimeout, isActive }) {
   const [timeLeft, setTimeLeft] = useState(duration);
+  const onTimeoutRef = useRef(onTimeout);
+  const isActiveRef = useRef(isActive);
+
+  // Keep refs updated
+  useEffect(() => {
+    onTimeoutRef.current = onTimeout;
+  }, [onTimeout]);
+
+  useEffect(() => {
+    isActiveRef.current = isActive;
+  }, [isActive]);
 
   useEffect(() => {
     if (!isActive) {
@@ -14,7 +25,9 @@ export default function CountdownTimer({ duration, onTimeout, isActive }) {
       setTimeLeft((prev) => {
         if (prev <= 1) {
           clearInterval(interval);
-          onTimeout();
+          if (onTimeoutRef.current) {
+            onTimeoutRef.current();
+          }
           return 0;
         }
         return prev - 1;
@@ -22,11 +35,8 @@ export default function CountdownTimer({ duration, onTimeout, isActive }) {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [duration, onTimeout, isActive]);
+  }, [duration, isActive]);
 
-  useEffect(() => {
-    setTimeLeft(duration);
-  }, [duration]);
   if (!isActive) return null;
 
   const minutes = Math.floor(timeLeft / 60);

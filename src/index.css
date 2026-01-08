@@ -43,8 +43,8 @@
   }
 
   .dark body {
-    background: linear-gradient(to bottom right, #0f172a, #1e293b, #0f172a);
-    color: #f8fafc;
+    background: linear-gradient(to bottom right, rgba(224, 231, 255, 0.4), rgba(199, 249, 204, 0.4), rgba(255, 233, 163, 0.4));
+    color: #0f172a;
   }
 
   a {
