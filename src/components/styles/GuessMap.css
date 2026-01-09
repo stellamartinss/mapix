@@ -5,6 +5,11 @@
   border-radius: 12px;
   overflow: hidden;
   position: relative;
+  /* Ensure touch events are captured and prevent page scrolling */
+  touch-action: pan-x pan-y pinch-zoom;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 .guess-map-confirm-btn {

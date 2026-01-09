@@ -7,10 +7,10 @@ export default function RoundLimitReached() {
     <div className='flex flex-col items-center justify-center gap-6 p-8 md:p-12 text-center'>
       <div className='text-6xl md:text-8xl'>🎮</div>
       <div>
-        <h2 className='text-2xl md:text-3xl font-bold text-slate-900 dark:text-white mb-2'>
+        <h2 className='text-2xl md:text-3xl font-bold text-slate-900 dark:text-slate-900 mb-2'>
           {t('roundLimitTitle')}
         </h2>
-        <p className='text-slate-600 dark:text-slate-300 text-lg'>
+        <p className='text-slate-600 dark:text-slate-800 text-lg'>
           {t('roundLimitMessage')}
         </p>
       </div>

@@ -83,7 +83,7 @@ function OnboardingTypewriter({ onComplete }) {
       <div className='onboarding-text'>
          <>
             {displayedText}
-            {showCursor && <span className='onboarding-cursor'>_</span>}
+            {showCursor && <span className='onboarding-cursor'>|</span>}
           </>
       </div>
     </div>

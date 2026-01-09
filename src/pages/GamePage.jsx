@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState, useEffect } from 'react';
 import LastGuesses from '../components/LastGuesses';
 import GuessMap from '../components/GuessMap';
 import StreetView from '../components/StreetView';
@@ -11,9 +11,11 @@ import FloatingPanel from '../components/FloatingPanel';
 import FloatingButton from '../components/FloatingButton';
 import SettingsButton from '../components/SettingsButton';
 import HowToPlayButton from '../components/HowToPlayButton';
+import MusicToggle from '../components/MusicToggle';
 import { useAuth } from '../hooks/useAuth';
 import { useRoundLimit } from '../hooks/useRoundLimit';
 import { useTranslation } from '../hooks/useTranslation';
+import { useBackgroundMusic } from '../hooks/useBackgroundMusic';
 import {
   calculateScore,
   getRandomLatLng,
@@ -36,6 +38,7 @@ export default function GamePage() {
     getRemainingRounds,
   } = useRoundLimit();
   const { t } = useTranslation();
+  const { isMusicEnabled, isPlaying, play, pause, stop, toggleMusic } = useBackgroundMusic();
 
   const [realPosition, setRealPosition] = useState(null);
   const [guessPosition, setGuessPosition] = useState(null);
@@ -163,7 +166,11 @@ export default function GamePage() {
       return;
     }
     pickRandomStreetView();
-  }, [pickRandomStreetView, canPlayNewRound]);
+    // Start music when user clicks start (user interaction allows autoplay)
+    if (isMusicEnabled && !isPlaying) {
+      play();
+    }
+  }, [pickRandomStreetView, canPlayNewRound, isMusicEnabled, isPlaying, play]);
 
   const handleGuess = useCallback(() => {
     if (!realPosition || !guessPosition) return;
@@ -193,7 +200,8 @@ export default function GamePage() {
     setTimerActive(false);
     setHasTimedOut(true);
     incrementRounds();
-  }, [incrementRounds]);
+    pause();
+  }, [incrementRounds, pause]);
 
   const handlePlayAgain = useCallback(() => {
     if (!canPlayNewRound()) {
@@ -202,12 +210,17 @@ export default function GamePage() {
     setIsMapVisible(false);
     setIsHistoryVisible(false);
     pickRandomStreetView();
-  }, [pickRandomStreetView, canPlayNewRound]);
+    // Resume music if it was paused
+    if (isMusicEnabled && !isPlaying) {
+      play();
+    }
+  }, [pickRandomStreetView, canPlayNewRound, isMusicEnabled, isPlaying, play]);
 
   const handleGuessConfirm = useCallback(() => {
     handleGuess();
+    pause();
     // Keep map visible after confirming guess
-  }, [handleGuess]);
+  }, [handleGuess, pause]);
 
   const linePath = useMemo(() => {
     if (!realPosition || !guessPosition || distanceKm === null) return [];
@@ -404,10 +417,13 @@ export default function GamePage() {
             <label>{t('language') || 'Idioma'}</label>
             <LanguageToggle />
           </div>
-          {/* <div className="setting-item">
-            <label>{t('theme') || 'Tema'}</label>
-            <DarkModeToggle />
-          </div> */}
+          <div className='setting-item'>
+            <label>{t('music') || 'Música de Fundo'}</label>
+            <MusicToggle 
+              isMusicEnabled={isMusicEnabled} 
+              onToggle={toggleMusic} 
+            />
+          </div>
         </div>
       </FloatingPanel>
 

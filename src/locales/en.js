@@ -27,15 +27,6 @@ export default {
   viewHistory: 'View history',
   hideHistory: 'Hide history',
   
-  // Start Screen
-  welcomeTitle: 'Welcome to Mapin!',
-  welcomeDescription: 'Discover where the Street View is. You have 75 seconds to make your guess!',
-  howToPlay: 'How to play',
-  step1: '1. Observe the Street View image',
-  step2: '2. Click on the map where you think it is',
-  step3: '3. Confirm your guess before time runs out',
-  attemptsRemaining: 'Attempts remaining',
-
   // API Key Error (App.jsx)
   apiKeyError: 'Add your Google Maps key in a file',
   apiKeyWith: 'with:',
@@ -95,6 +86,11 @@ export default {
   gameInfo: 'Game information',
   language: 'Language',
   theme: 'Theme',
+  music: 'Background Music',
+  musicOn: 'Music On',
+  musicOff: 'Music Off',
+  enableMusic: 'Enable background music',
+  disableMusic: 'Disable background music',
 
   // How to Play
   howToPlayTitle: 'How to Play',
@@ -115,8 +111,8 @@ export default {
   onboarding2: "You don't know where you are.",
   onboarding3: 'Your phone still works.',
   onboarding4: 'There is only time for one call for help.',
-  onboarding5: 'A helicopter will be sent.',
-  onboarding6: 'It will land exactly at the point you mark on the map.',
+  onboarding5: 'A rescue team is standing by.',
+  onboarding6: 'They will arrive exactly at the point you mark on the map.',
   onboarding7: 'You cannot search.',
   onboarding8: 'You cannot ask for help.',
   onboarding9: 'Observe your surroundings.',

@@ -95,6 +95,11 @@ export default {
   gameInfo: 'Informações do jogo',
   language: 'Idioma',
   theme: 'Tema',
+  music: 'Música de Fundo',
+  musicOn: 'Música Ligada',
+  musicOff: 'Música Desligada',
+  enableMusic: 'Ativar música de fundo',
+  disableMusic: 'Desativar música de fundo',
 
   // How to Play
   howToPlayTitle: 'Como Jogar',
@@ -115,8 +120,8 @@ export default {
   onboarding2: 'Não sabe onde está.',
   onboarding3: 'Seu celular ainda funciona.',
   onboarding4: 'Só há tempo para um pedido de ajuda.',
-  onboarding5: 'Um helicóptero será enviado.',
-  onboarding6: 'Ele vai pousar exatamente no ponto que você marcar no mapa.',
+  onboarding5: 'Uma equipe de resgate está de prontidão.',
+  onboarding6: 'Ela chegará exatamente no ponto que você marcar no mapa.',
   onboarding7: 'Você não pode pesquisar.',
   onboarding8: 'Não pode pedir ajuda.',
   onboarding9: 'Observe o ambiente ao seu redor.',

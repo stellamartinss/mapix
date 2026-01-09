@@ -40,10 +40,23 @@ function GuessMap({
         zoom={2}
         onClick={handleClick}
         options={{
-          streetViewControl: false,
-          mapTypeControl: false,
-          fullscreenControl: false,
+          // CRITICAL: gestureHandling "greedy" allows single-finger panning on mobile
+          // This removes the "use two fingers" message and enables one-finger map navigation
+          gestureHandling: 'greedy',
+          // Disable all default UI controls for clean game interface
+          disableDefaultUI: true,
+          // Touch and interaction settings
+          draggable: true,
+          draggableCursor: 'crosshair',
+          // Zoom settings
           minZoom: 2,
+          maxZoom: 20,
+          // Disable double-click zoom to prevent accidental zoom
+          disableDoubleClickZoom: true,
+          // Disable scroll wheel zoom for consistent touch behavior
+          scrollwheel: false,
+          // Disable keyboard shortcuts for game-like UX
+          keyboardShortcuts: false,
           zIndex: 1,
         }}
       >
