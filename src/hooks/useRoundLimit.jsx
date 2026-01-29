@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-const MAX_ROUNDS = 5;
+const MAX_ROUNDS = 15;
 const STORAGE_KEY = 'mapix_rounds_played';
 const STORAGE_DATE_KEY = 'mapix_last_play_date';
 

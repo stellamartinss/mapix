@@ -32,7 +32,7 @@ function generateTensionAudio() {
 export function useBackgroundMusic() {
   const [isMusicEnabled, setIsMusicEnabled] = useState(() => {
     const saved = localStorage.getItem('musicEnabled');
-    return saved !== null ? JSON.parse(saved) : true;
+    return saved !== null ? JSON.parse(saved) : false;
   });
   
   const [isPlaying, setIsPlaying] = useState(false);
