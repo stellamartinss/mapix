@@ -136,10 +136,27 @@ export const startRoom = async (roomCode, location) => {
 export const submitGuess = async (roomCode, playerId, guess) => {
   const roomRef = doc(db, 'rooms', roomCode);
   
+  // Atualiza o palpite do jogador
   await updateDoc(roomRef, {
     [`players.${playerId}.guess`]: guess,
     [`players.${playerId}.guessedAt`]: serverTimestamp()
   });
+
+  // Verifica se todos os jogadores já fizeram seus palpites
+  const roomSnap = await getDoc(roomRef);
+  if (roomSnap.exists()) {
+    const roomData = roomSnap.data();
+    const players = roomData.players || {};
+    const playersList = Object.values(players);
+    const allGuessed = playersList.length > 0 && playersList.every(p => p.guess);
+
+    // Se todos os jogadores palpitaram, finaliza a sala automaticamente
+    if (allGuessed && roomData.status === 'playing') {
+      await updateDoc(roomRef, {
+        status: 'finished'
+      });
+    }
+  }
 };
 
 /**

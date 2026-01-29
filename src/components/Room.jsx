@@ -4,7 +4,7 @@ import { CheckCircle, Users } from 'lucide-react';
 import GuessMap from './GuessMap';
 import StreetView from './StreetView';
 import Timer from './Timer';
-import Ranking from './Ranking';
+import MultiplayerResult from './MultiplayerResult';
 
 /**
  * Componente Room - Gerencia a sala durante o jogo
@@ -25,10 +25,10 @@ const Room = ({
 
   console.log('room', room)
 
-  // Se a sala terminou, mostra o ranking
+  // Se a sala terminou, mostra o resultado com mapa
   if (room.status === 'finished') {
     return (
-      <Ranking
+      <MultiplayerResult
         room={room}
         players={players}
         playerId={playerId}

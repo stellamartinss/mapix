@@ -1,0 +1,75 @@
+/* MultiplayerResult - Estilos específicos e responsividade */
+
+/* Transições suaves para elementos interativos */
+.multiplayer-result-rank-item {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.multiplayer-result-rank-item:hover {
+  transform: translateY(-2px);
+}
+
+/* Responsividade para tablets e mobile */
+@media (max-width: 1024px) {
+  .multiplayer-result-layout {
+    flex-direction: column;
+  }
+
+  .multiplayer-result-map,
+  .multiplayer-result-ranking {
+    width: 100% !important;
+    height: 50vh !important;
+  }
+}
+
+/* Mobile pequeno */
+@media (max-width: 640px) {
+  .multiplayer-result-map {
+    height: 40vh !important;
+  }
+
+  .multiplayer-result-ranking {
+    height: 60vh !important;
+  }
+}
+
+/* Animações suaves */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.5s ease-out;
+}
+
+/* Estilos para o mapa */
+.multiplayer-result-map-legend {
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+/* Scrollbar customizada para o ranking */
+.multiplayer-result-ranking::-webkit-scrollbar {
+  width: 8px;
+}
+
+.multiplayer-result-ranking::-webkit-scrollbar-track {
+  background: rgba(31, 41, 55, 0.5);
+  border-radius: 4px;
+}
+
+.multiplayer-result-ranking::-webkit-scrollbar-thumb {
+  background: rgba(99, 102, 241, 0.5);
+  border-radius: 4px;
+}
+
+.multiplayer-result-ranking::-webkit-scrollbar-thumb:hover {
+  background: rgba(99, 102, 241, 0.7);
+}

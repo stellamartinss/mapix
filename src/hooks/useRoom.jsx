@@ -285,8 +285,8 @@ export const useRoom = () => {
       const remaining = Math.max(0, room.duration - elapsed);
       setTimeLeft(remaining);
 
-      // Auto-finaliza quando o tempo acaba
-      if (remaining === 0 && isCreator) {
+      // Auto-finaliza quando o tempo acaba (apenas se ainda não finalizou)
+      if (remaining === 0 && isCreator && room.status === 'playing') {
         finishGame();
       }
     };
