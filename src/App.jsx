@@ -8,6 +8,7 @@ import { LoadScript } from '@react-google-maps/api';
 import { AuthProvider } from './hooks/useAuth';
 import { LanguageProvider, useTranslation } from './hooks/useTranslation';
 import GamePage from './pages/GamePage';
+import MultiplayerPage from './pages/MultiplayerPage';
 import './App.css';
 
 const libraries = ['places'];
@@ -53,6 +54,8 @@ function App() {
             <div className='max-w-none mx-auto py-8 pb-12 flex flex-col gap-4'>
               <Routes>
                 <Route path='/game' element={<GamePage />} />
+                <Route path='/multiplayer' element={<MultiplayerPage />} />
+                <Route path='/multiplayer/:roomCode' element={<MultiplayerPage />} />
                 <Route path='/' element={<Navigate to='/game' replace />} />
               </Routes>
             </div>

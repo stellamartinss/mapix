@@ -1,7 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { useTranslation } from '../hooks/useTranslation';
 import OnboardingTypewriter from './OnboardingTypewriter';
+import { Users } from 'lucide-react';
 
 import './styles/OnboardingTypewriter.css';
 
@@ -11,20 +12,7 @@ function StartScreen({
   attemptsLeft,
 }) {
   const { t } = useTranslation();
-  const [showOnboarding, setShowOnboarding] = useState(false);
-
-  useEffect(() => {
-    // Verificar se o usuário já viu o onboarding
-    const hasSeenOnboarding = localStorage.getItem('hasSeenOnboarding');
-    if (!hasSeenOnboarding) {
-      setShowOnboarding(true);
-    }
-  }, []);
-
-  const handleOnboardingComplete = () => {
-    setShowOnboarding(false);
-    localStorage.setItem('hasSeenOnboarding', 'true');
-  };
+  const navigate = useNavigate();
 
   return (
     <>
@@ -38,7 +26,7 @@ function StartScreen({
             />
           </div>
 
-          <OnboardingTypewriter onCompl9ete={handleOnboardingComplete} />
+          <OnboardingTypewriter />
 
           {isBlocked ? (
             <div className='p-5 bg-red-50 dark:bg-red-950 border-2 border-red-200 dark:border-red-900 rounded-xl text-red-900 dark:text-red-300'>
@@ -60,15 +48,25 @@ function StartScreen({
             </>
           )}
         </div>
-        <div>
+        <div className='flex flex-col gap-3 w-full max-w-md'>
           <button
-                className='onboarding-cta-inline w-full'
-                onClick={onStart}
-                type='button'
-                aria-label={t('onboardingCTA')}
-              >
-                {t('onboardingCTA')}
-              </button>
+            className='onboarding-cta-inline w-full'
+            onClick={onStart}
+            type='button'
+            aria-label={t('onboardingCTA')}
+          >
+            {t('onboardingCTA')}
+          </button>
+          
+          <button
+            className='flex items-center justify-center gap-2 px-6 py-3 bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 text-white font-bold rounded-lg transition-colors w-full'
+            onClick={() => navigate('/multiplayer')}
+            type='button'
+            aria-label='Modo Multiplayer'
+          >
+            <Users className='w-5 h-5' />
+            Modo Multiplayer
+          </button>
         </div>
       </div>
     </>
