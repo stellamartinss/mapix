@@ -17,7 +17,7 @@ function ApiKeyError() {
   const { t } = useTranslation();
   
   return (
-    <div className='min-h-screen grid place-items-center text-center p-6'>
+    <div className='h-full w-full grid place-items-center text-center p-6 overflow-hidden'>
       <div>
         <h1 className='text-3xl font-bold mb-4'>{t('appName')}</h1>
         <p className='text-slate-600 dark:text-slate-400'>
@@ -51,7 +51,7 @@ function App() {
       <AuthProvider>
         <Router>
           <LoadScript googleMapsApiKey={apiKey} libraries={libraries}>
-            <div className='max-w-none mx-auto py-8 pb-12 flex flex-col gap-4'>
+            <div className='w-full h-full'>
               <Routes>
                 <Route path='/game' element={<GamePage />} />
                 <Route path='/multiplayer' element={<MultiplayerPage />} />

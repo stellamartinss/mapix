@@ -18,18 +18,21 @@
   .multiplayer-result-map,
   .multiplayer-result-ranking {
     width: 100% !important;
-    height: 50vh !important;
+    height: 50% !important;
+    max-height: 50vh !important;
   }
 }
 
 /* Mobile pequeno */
 @media (max-width: 640px) {
   .multiplayer-result-map {
-    height: 40vh !important;
+    height: 40% !important;
+    max-height: 40vh !important;
   }
 
   .multiplayer-result-ranking {
-    height: 60vh !important;
+    height: 60% !important;
+    max-height: 60vh !important;
   }
 }
 

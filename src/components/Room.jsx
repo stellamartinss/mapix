@@ -63,9 +63,9 @@ const Room = ({
   const totalPlayers = players.length;
 
   return (
-    <div className="h-screen w-screen flex flex-col bg-gray-900">
+    <div className="h-full w-full flex flex-col bg-gray-900 overflow-hidden">
       {/* Header com Timer e Info */}
-      <div className="bg-gray-800 border-b border-gray-700 p-4 flex items-center justify-between">
+      <div className="bg-gray-800 border-b border-gray-700 p-4 flex items-center justify-between flex-shrink-0">
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2">
             <code className="text-lg font-mono font-bold text-indigo-400">
@@ -93,9 +93,9 @@ const Room = ({
       </div>
 
       {/* Área de jogo */}
-      <div className="flex-1 flex">
+      <div className="flex-1 flex overflow-hidden min-h-0">
         {/* Street View - lado esquerdo */}
-        <div className="w-1/2 h-full relative">
+        <div className="w-1/2 h-full relative overflow-hidden">
           <StreetView 
             position={room.location}
             loading={!room.location}
@@ -110,7 +110,7 @@ const Room = ({
         </div>
 
         {/* Mapa de palpite - lado direito */}
-        <div className="w-1/2 h-full relative">
+        <div className="w-1/2 h-full relative overflow-hidden">
           <GuessMap
             onGuess={handleMapClick}
             guessPosition={selectedPosition}

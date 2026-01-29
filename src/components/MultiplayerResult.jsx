@@ -108,9 +108,9 @@ const MultiplayerResult = ({ room, players, playerId, isCreator, onLeave, onPlay
   const currentPlayer = rankedPlayers.find(p => p.id === playerId);
 
   return (
-    <div className="h-screen w-screen flex flex-col bg-gray-900">
+    <div className="h-full w-full flex flex-col bg-gray-900 overflow-hidden">
       {/* Header */}
-      <div className="bg-gray-800 border-b border-gray-700 p-4 flex items-center justify-between">
+      <div className="bg-gray-800 border-b border-gray-700 p-4 flex items-center justify-between flex-shrink-0">
         <div className="flex items-center gap-4">
           <h1 className="text-2xl font-bold text-white">🎉 Resultado Final</h1>
           <code className="text-lg font-mono text-indigo-400">
@@ -162,9 +162,9 @@ const MultiplayerResult = ({ room, players, playerId, isCreator, onLeave, onPlay
       </div>
 
       {/* Conteúdo principal: Mapa + Ranking */}
-      <div className="flex-1 flex multiplayer-result-layout">
+      <div className="flex-1 flex multiplayer-result-layout overflow-hidden min-h-0">
         {/* MAPA - Lado Esquerdo (50%) */}
-        <div className="w-1/2 h-full relative bg-gray-800 multiplayer-result-map">
+        <div className="w-1/2 h-full relative bg-gray-800 multiplayer-result-map overflow-hidden">
           <GoogleMap
             mapContainerStyle={mapContainerStyle}
             zoom={2}
@@ -262,7 +262,7 @@ const MultiplayerResult = ({ room, players, playerId, isCreator, onLeave, onPlay
 
         {/* RANKING - Lado Direito (50%) */}
         <div className="w-1/2 h-full overflow-y-auto bg-gray-900 p-6 multiplayer-result-ranking">
-          <div className="max-w-2xl mx-auto">
+          <div className="max-w-2xl mx-auto w-full">
             <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
               <Trophy className="w-6 h-6 text-yellow-500" />
               Ranking

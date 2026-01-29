@@ -44,7 +44,7 @@ function StreetView({ position, loading }) {
 
   if (loading) {
     return (
-      <div className='h-[400px] md:rounded-xl bg-gradient-to-br from-indigo-50 to-slate-100 grid place-items-center text-slate-600 dark:text-slate-400 text-center'>
+      <div className='w-full h-full bg-gradient-to-br from-indigo-50 to-slate-100 grid place-items-center text-slate-600 dark:text-slate-400 text-center'>
         {t('generatingRandomPoint')}
       </div>
     );
@@ -52,7 +52,7 @@ function StreetView({ position, loading }) {
 
   if (!position) {
     return (
-      <div className='h-[400px] md:rounded-xl bg-gradient-to-br from-indigo-50 to-slate-100 dark:from-slate-800 dark:to-slate-900 grid place-items-center text-slate-600 dark:text-slate-400 text-center'>
+      <div className='w-full h-full bg-gradient-to-br from-indigo-50 to-slate-100 dark:from-slate-800 dark:to-slate-900 grid place-items-center text-slate-600 dark:text-slate-400 text-center'>
         {t('loadingStreetView')}
       </div>
     );
@@ -60,9 +60,9 @@ function StreetView({ position, loading }) {
 
   return (
     <div
-      className='w-full h-full md:rounded-xl overflow-hidden'
+      className='w-full h-full overflow-hidden'
       ref={containerRef}
-      style={{ minHeight: '400px', backgroundColor: '#1a1a1a' }}
+      style={{ backgroundColor: '#1a1a1a' }}
     />
   );
 }

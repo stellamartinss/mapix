@@ -37,7 +37,7 @@ const Lobby = ({ onCreateRoom, onJoinRoom, loading, error }) => {
   // Tela inicial - escolher modo
   if (!mode) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center p-4">
+      <div className="h-full w-full bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center p-4 overflow-hidden">
         <div className="max-w-md w-full space-y-8">
           <div className="text-center">
             <Users className="mx-auto h-16 w-16 text-indigo-600 dark:text-indigo-400" />
@@ -73,7 +73,7 @@ const Lobby = ({ onCreateRoom, onJoinRoom, loading, error }) => {
   // Formulário de criar sala
   if (mode === 'create') {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center p-4">
+      <div className="h-full w-full bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center p-4 overflow-auto">
         <div className="max-w-md w-full bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8">
           <button
             onClick={() => setMode(null)}
@@ -142,7 +142,7 @@ const Lobby = ({ onCreateRoom, onJoinRoom, loading, error }) => {
   // Formulário de entrar em sala
   if (mode === 'join') {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center p-4">
+      <div className="h-full w-full bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center p-4 overflow-auto">
         <div className="max-w-md w-full bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8">
           <button
             onClick={() => setMode(null)}
@@ -239,7 +239,7 @@ export const WaitingRoom = ({ room, players, isCreator, onStartGame, onLeave, lo
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center p-4">
+    <div className="h-full w-full bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center p-4 overflow-auto">
       <div className="max-w-2xl w-full bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8">
         <div className="text-center mb-8">
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
