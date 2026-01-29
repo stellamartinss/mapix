@@ -8,27 +8,37 @@ function StreetView({ position, loading }) {
   const { t } = useTranslation();
 
   useEffect(() => {
-    if (!window.google || !containerRef.current || !position) return;
+    if (!window.google || !containerRef.current || !position) {
+      return;
+    }
 
-    if (!panoramaRef.current) {
+    // Sempre recriar o panorama para garantir que seja renderizado
+    if (panoramaRef.current) {
+      panoramaRef.current = null;
+    }
+
+    try {
       panoramaRef.current = new window.google.maps.StreetViewPanorama(
         containerRef.current,
         {
-          position,
+          position: position,
           addressControl: false,
           fullscreenControl: true,
           panControl: true,
           linksControl: true,
           motionTracking: false,
+          zoomControl: true,
+          enableCloseButton: false,
         }
       );
-    } else {
-      panoramaRef.current.setPosition(position);
+    } catch (error) {
+      console.error('Erro ao criar Street View:', error);
     }
 
     return () => {
-      // clean up the panorama instance on unmount
-      panoramaRef.current = null;
+      if (panoramaRef.current) {
+        panoramaRef.current = null;
+      }
     };
   }, [position]);
 
@@ -52,6 +62,7 @@ function StreetView({ position, loading }) {
     <div
       className='w-full h-full md:rounded-xl overflow-hidden'
       ref={containerRef}
+      style={{ minHeight: '400px', backgroundColor: '#1a1a1a' }}
     />
   );
 }

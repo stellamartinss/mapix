@@ -22,6 +22,9 @@ const Room = ({
   const [selectedPosition, setSelectedPosition] = useState(null);
   const [submitting, setSubmitting] = useState(false);
 
+
+  console.log('room', room)
+
   // Se a sala terminou, mostra o ranking
   if (room.status === 'finished') {
     return (
@@ -88,10 +91,10 @@ const Room = ({
       {/* Área de jogo */}
       <div className="flex-1 flex">
         {/* Street View - lado esquerdo */}
-        <div className="w-1/2 relative">
+        <div className="w-1/2 h-full relative">
           <StreetView 
             position={room.location}
-            readOnly={true}
+            loading={!room.location}
           />
           
           {hasGuessed && (
@@ -103,11 +106,12 @@ const Room = ({
         </div>
 
         {/* Mapa de palpite - lado direito */}
-        <div className="w-1/2 relative">
+        <div className="w-1/2 h-full relative">
           <GuessMap
-            onMapClick={handleMapClick}
-            selectedPosition={selectedPosition}
-            disabled={hasGuessed}
+            onGuess={handleMapClick}
+            guessPosition={selectedPosition}
+            disableInteraction={hasGuessed}
+            disableConfirm={true}
           />
 
           {/* Botão de confirmar palpite */}

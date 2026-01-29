@@ -18,8 +18,8 @@ import { useTranslation } from '../hooks/useTranslation';
 import { useBackgroundMusic } from '../hooks/useBackgroundMusic';
 import {
   calculateScore,
-  getRandomLatLng,
   haversineDistance,
+  pickRandomStreetView,
 } from '../utils/geo';
 import './styles/GamePage.css';
 import PlayAgain from '../components/PlayAgain';
@@ -49,7 +49,7 @@ export default function GamePage() {
   const [timerActive, setTimerActive] = useState(false);
   const [hasTimedOut, setHasTimedOut] = useState(false);
 
-  const pickRandomStreetView = useCallback(async () => {
+  const handlePickRandomStreetView = useCallback(async () => {
     if (!window.google) return;
 
     setLoading(true);
@@ -58,119 +58,30 @@ export default function GamePage() {
     setLastScore(null);
     setTimerActive(false);
     setHasTimedOut(false);
-    setTimerActive(false);
-    setHasTimedOut(false);
 
-    const service = new window.google.maps.StreetViewService();
-    const maxAttempts = 50; // Increased to account for validation rejections
-
-    // Helper function to validate if panorama has actual imagery
-    const validatePanorama = (panoId) => {
-      return new Promise((resolve) => {
-        if (!panoId) {
-          resolve(false);
-          return;
-        }
-
-        // Request panorama by ID to check if it has tiles
-        service.getPanorama({ pano: panoId }, (data, status) => {
-          if (status !== window.google.maps.StreetViewStatus.OK) {
-            resolve(false);
-            return;
-          }
-
-          // Reject if it's an indoor panorama (no outdoor imagery)
-          if (data?.location?.pano && data.location.description) {
-            const desc = data.location.description.toLowerCase();
-            // Filter out common indoor/business panoramas
-            if (
-              desc.includes('interior') ||
-              desc.includes('inside') ||
-              desc.includes('indoors') ||
-              desc.includes('business photos')
-            ) {
-              resolve(false);
-              return;
-            }
-          }
-
-          // Check if panorama has links (connected to street view network)
-          // Panoramas without links are often isolated/deprecated
-          if (!data?.links || data.links.length === 0) {
-            resolve(false);
-            return;
-          }
-
-          // Additional check: outdoor panoramas typically have more links
-          if (data.links.length < 2) {
-            resolve(false);
-            return;
-          }
-
-          resolve(true);
-        });
-      });
-    };
-
-    const attempt = (count = 0) =>
-      new Promise((resolve) => {
-        const candidate = getRandomLatLng();
-        service.getPanorama(
-          {
-            location: candidate,
-            radius: 50000,
-            source: window.google.maps.StreetViewSource.OUTDOOR, // Prefer outdoor imagery
-          },
-          async (data, status) => {
-            if (
-              status === window.google.maps.StreetViewStatus.OK &&
-              data?.location?.latLng &&
-              data?.location?.pano
-            ) {
-              // Validate the panorama has actual imagery
-              const isValid = await validatePanorama(data.location.pano);
-
-              if (isValid) {
-                resolve({
-                  lat: data.location.latLng.lat(),
-                  lng: data.location.latLng.lng(),
-                  panoId: data.location.pano,
-                });
-              } else if (count < maxAttempts) {
-                // Invalid panorama, try again
-                resolve(attempt(count + 1));
-              } else {
-                // Max attempts reached, use fallback
-                resolve({
-                  lat: candidate.lat,
-                  lng: candidate.lng,
-                });
-              }
-            } else if (count < maxAttempts) {
-              resolve(attempt(count + 1));
-            } else {
-              resolve(candidate);
-            }
-          }
-        );
-      });
-
-    const location = await attempt();
-    setRealPosition(location);
-    setLoading(false);
-    setTimerActive(true);
+    try {
+      const location = await pickRandomStreetView();
+      setRealPosition(location);
+      setTimerActive(true);
+    } catch (error) {
+      console.error('Erro ao gerar localização:', error);
+      // Fallback to a random location if something goes wrong
+      setRealPosition({ lat: 0, lng: 0 });
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
   const handleStartGame = useCallback(() => {
     if (!canPlayNewRound()) {
       return;
     }
-    pickRandomStreetView();
+    handlePickRandomStreetView();
     // Start music when user clicks start (user interaction allows autoplay)
     if (isMusicEnabled && !isPlaying) {
       play();
     }
-  }, [pickRandomStreetView, canPlayNewRound, isMusicEnabled, isPlaying, play]);
+  }, [handlePickRandomStreetView, canPlayNewRound, isMusicEnabled, isPlaying, play]);
 
   const handleGuess = useCallback(() => {
     if (!realPosition || !guessPosition) return;
@@ -209,12 +120,12 @@ export default function GamePage() {
     }
     setIsMapVisible(false);
     setIsHistoryVisible(false);
-    pickRandomStreetView();
+    handlePickRandomStreetView();
     // Resume music if it was paused
     if (isMusicEnabled && !isPlaying) {
       play();
     }
-  }, [pickRandomStreetView, canPlayNewRound, isMusicEnabled, isPlaying, play]);
+  }, [handlePickRandomStreetView, canPlayNewRound, isMusicEnabled, isPlaying, play]);
 
   const handleGuessConfirm = useCallback(() => {
     handleGuess();

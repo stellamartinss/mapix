@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useRoom } from '../hooks/useRoom';
-import { getRandomLatLng } from '../utils/geo';
+import { pickRandomStreetView } from '../utils/geo';
 import Lobby, { WaitingRoom } from '../components/Lobby';
 import Room from '../components/Room';
 
@@ -30,19 +30,16 @@ const MultiplayerPage = () => {
     leaveRoom
   } = useRoom();
 
-  // Tenta reconectar automaticamente se houver um código na URL
   useEffect(() => {
     const attemptReconnect = async () => {
       if (urlRoomCode && !room && !reconnecting && !loading) {
         setReconnecting(true);
         
         try {
-          // Tenta reconectar à sala
           const savedName = localStorage.getItem(`playerName_${playerId}`) || 'Jogador';
           await reconnectToRoom(urlRoomCode.toUpperCase(), savedName);
         } catch (err) {
           console.error('Erro ao reconectar:', err);
-          // Se falhar, redireciona para o lobby (sem código na URL)
           navigate('/multiplayer', { replace: true });
         } finally {
           setReconnecting(false);
@@ -53,19 +50,16 @@ const MultiplayerPage = () => {
     attemptReconnect();
   }, [urlRoomCode, room, reconnecting, loading, reconnectToRoom, navigate, playerId]);
 
-  // Tenta reconectar automaticamente se houver um código na URL
   useEffect(() => {
     const attemptReconnect = async () => {
       if (urlRoomCode && !room && !reconnecting && !loading) {
         setReconnecting(true);
         
         try {
-          // Tenta reconectar à sala
           const savedName = localStorage.getItem(`playerName_${playerId}`) || 'Jogador';
           await reconnectToRoom(urlRoomCode.toUpperCase(), savedName);
         } catch (err) {
           console.error('Erro ao reconectar:', err);
-          // Se falhar, redireciona para o lobby (sem código na URL)
           navigate('/multiplayer', { replace: true });
         } finally {
           setReconnecting(false);
@@ -104,11 +98,14 @@ const MultiplayerPage = () => {
 
   // Inicia o jogo quando o criador clica em "Iniciar"
   const handleStartGame = async () => {
-    const location = getRandomLatLng();
     try {
+      console.log('Gerando localização com Street View...');
+      const location = await pickRandomStreetView();
+      console.log('Localização gerada:', location);
       await startGame(location);
     } catch (err) {
       console.error('Erro ao iniciar jogo:', err);
+      alert('Erro ao gerar localização. Tente novamente.');
     }
   };
 
