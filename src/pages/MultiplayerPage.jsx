@@ -27,7 +27,8 @@ const MultiplayerPage = () => {
     reconnectToRoom,
     startGame,
     submitGuess,
-    leaveRoom
+    leaveRoom,
+    resetRoom
   } = useRoom();
 
   useEffect(() => {
@@ -168,8 +169,10 @@ const MultiplayerPage = () => {
       playerId={playerId}
       timeLeft={timeLeft}
       hasGuessed={hasGuessed}
+      isCreator={isCreator}
       onSubmitGuess={submitGuess}
       onLeave={handleLeaveRoom}
+      onPlayAgain={resetRoom}
       loading={loading}
     />
   );

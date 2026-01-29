@@ -15,8 +15,10 @@ const Room = ({
   playerId,
   timeLeft,
   hasGuessed,
+  isCreator,
   onSubmitGuess, 
   onLeave,
+  onPlayAgain,
   loading 
 }) => {
   const [selectedPosition, setSelectedPosition] = useState(null);
@@ -32,7 +34,9 @@ const Room = ({
         room={room}
         players={players}
         playerId={playerId}
+        isCreator={isCreator}
         onLeave={onLeave}
+        onPlayAgain={onPlayAgain}
       />
     );
   }
@@ -171,8 +175,10 @@ Room.propTypes = {
   playerId: PropTypes.string.isRequired,
   timeLeft: PropTypes.number,
   hasGuessed: PropTypes.bool.isRequired,
+  isCreator: PropTypes.bool.isRequired,
   onSubmitGuess: PropTypes.func.isRequired,
   onLeave: PropTypes.func.isRequired,
+  onPlayAgain: PropTypes.func.isRequired,
   loading: PropTypes.bool
 };
 

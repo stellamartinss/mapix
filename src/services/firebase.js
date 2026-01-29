@@ -185,6 +185,37 @@ export const leaveRoom = async (roomCode, playerId) => {
 };
 
 /**
+ * Reseta a sala para jogar novamente com os mesmos jogadores
+ * @param {string} roomCode - Código da sala
+ */
+export const resetRoom = async (roomCode) => {
+  const roomRef = doc(db, 'rooms', roomCode);
+  const roomSnap = await getDoc(roomRef);
+  
+  if (!roomSnap.exists()) {
+    throw new Error('Sala não encontrada');
+  }
+
+  const roomData = roomSnap.data();
+  const players = roomData.players || {};
+  
+  // Limpa os palpites de todos os jogadores
+  const updates = {
+    status: 'waiting',
+    location: deleteField(),
+    startedAt: deleteField()
+  };
+  
+  // Remove guess e guessedAt de cada jogador
+  Object.keys(players).forEach(playerId => {
+    updates[`players.${playerId}.guess`] = deleteField();
+    updates[`players.${playerId}.guessedAt`] = deleteField();
+  });
+  
+  await updateDoc(roomRef, updates);
+};
+
+/**
  * Escuta mudanças em tempo real de uma sala
  * @param {string} roomCode - Código da sala
  * @param {function} callback - Função callback que recebe os dados da sala

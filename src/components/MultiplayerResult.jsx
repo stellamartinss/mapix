@@ -27,7 +27,7 @@ const PLAYER_COLORS = [
 /**
  * Componente MultiplayerResult - Exibe o resultado final com mapa e ranking
  */
-const MultiplayerResult = ({ room, players, playerId, onLeave }) => {
+const MultiplayerResult = ({ room, players, playerId, isCreator, onLeave, onPlayAgain }) => {
   const mapRef = useRef(null);
 
   // Calcula distâncias e ordena jogadores
@@ -103,6 +103,10 @@ const MultiplayerResult = ({ room, players, playerId, onLeave }) => {
     }
   };
 
+  // Encontra a posição do jogador atual
+  const currentPlayerRank = rankedPlayers.findIndex(p => p.id === playerId) + 1;
+  const currentPlayer = rankedPlayers.find(p => p.id === playerId);
+
   return (
     <div className="h-screen w-screen flex flex-col bg-gray-900">
       {/* Header */}
@@ -113,14 +117,48 @@ const MultiplayerResult = ({ room, players, playerId, onLeave }) => {
             {room.code}
           </code>
         </div>
+
+        {/* Posição do jogador atual */}
+        {currentPlayerRank > 0 && currentPlayer && (
+          <div className="flex items-center gap-3 bg-indigo-900/50 border-2 border-indigo-500 rounded-lg px-4 py-2">
+            <div className="flex items-center gap-2">
+              {getRankIcon(currentPlayerRank - 1)}
+              <div>
+                <p className="text-xs text-gray-400">Sua posição</p>
+                <p className="text-xl font-bold text-white">
+                  {currentPlayerRank}º lugar
+                </p>
+              </div>
+            </div>
+            <div className="border-l border-indigo-500 pl-3">
+              <p className="text-xs text-gray-400">Distância</p>
+              <p className="text-lg font-bold text-indigo-300">
+                {currentPlayer.distanceFormatted}
+              </p>
+            </div>
+          </div>
+        )}
         
-        <button
-          onClick={onLeave}
-          className="flex items-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg transition-colors"
-        >
-          <LogOut className="w-4 h-4" />
-          Sair
-        </button>
+        <div className="flex items-center gap-3">
+          {isCreator && (
+            <button
+              onClick={onPlayAgain}
+              className="flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg transition-colors"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+              </svg>
+              Jogar Novamente
+            </button>
+          )}
+          <button
+            onClick={onLeave}
+            className="flex items-center gap-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg transition-colors"
+          >
+            <LogOut className="w-4 h-4" />
+            Sair
+          </button>
+        </div>
       </div>
 
       {/* Conteúdo principal: Mapa + Ranking */}
@@ -322,7 +360,9 @@ MultiplayerResult.propTypes = {
   room: PropTypes.object.isRequired,
   players: PropTypes.array.isRequired,
   playerId: PropTypes.string.isRequired,
-  onLeave: PropTypes.func.isRequired
+  isCreator: PropTypes.bool.isRequired,
+  onLeave: PropTypes.func.isRequired,
+  onPlayAgain: PropTypes.func.isRequired
 };
 
 export default MultiplayerResult;

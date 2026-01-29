@@ -8,6 +8,7 @@ import {
   submitGuess as submitGuessService,
   finishRoom as finishRoomService,
   leaveRoom as leaveRoomService,
+  resetRoom as resetRoomService,
   subscribeToRoom
 } from '../services/firebase';
 
@@ -248,6 +249,25 @@ export const useRoom = () => {
   }, [room, playerId]);
 
   /**
+   * Reseta a sala para jogar novamente com os mesmos jogadores
+   */
+  const resetRoom = useCallback(async () => {
+    if (!room) return;
+
+    setLoading(true);
+    setError(null);
+
+    try {
+      await resetRoomService(room.code);
+    } catch (err) {
+      setError(err.message);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  }, [room]);
+
+  /**
    * Verifica se o jogador atual é o criador da sala
    */
   const isCreator = room?.players?.[playerId]?.isCreator || false;
@@ -312,6 +332,7 @@ export const useRoom = () => {
     startGame,
     submitGuess,
     finishGame,
-    leaveRoom
+    leaveRoom,
+    resetRoom
   };
 };
