@@ -23,6 +23,7 @@ import {
 } from '../utils/geo';
 import './styles/GamePage.css';
 import PlayAgain from '../components/PlayAgain';
+import SinglePlayerRoom from '../components/SinglePlayerRoom';
 
 export default function GamePage() {
   const [isMapVisible, setIsMapVisible] = useState(false);
@@ -162,47 +163,22 @@ export default function GamePage() {
         </div>
       )}
       {/* Full-screen Street View */}
-      <div className='streetview-fullscreen'>
-        {hasReachedLimit ? (
-          <div className='overlay-message'>
-            <RoundLimitReached />
-          </div>
-        ) : !realPosition && !loading ? (
-          <div className='overlay-message'>
-            <StartScreen
-              onStart={handleStartGame}
-              attemptsLeft={attemptsLeft}
-              setIsSettingsVisible={setIsSettingsVisible}
-              isSettingsVisible={isSettingsVisible}
-              setIsHowToPlayVisible={setIsHowToPlayVisible}
-              isHowToPlayVisible={isHowToPlayVisible}
-            />
-          </div>
-        ) : (
-          <>
-            <StreetView position={realPosition} loading={loading} />
-
-            {/* Countdown Timer - Top Left */}
-            {timerActive && (
-              <div className='timer-overlay'>
-                <CountdownTimer
-                  key={realPosition?.lat + '-' + realPosition?.lng}
-                  duration={75}
-                  onTimeout={handleTimeout}
-                  isActive={timerActive}
-                />
-              </div>
-            )}
-
-            {/* Timeout Message - Center */}
-            {hasTimedOut && distanceKm === null && (
-              <div className='timeout-overlay'>
-                <div className='timeout-message'>{t('timeout')}</div>
-              </div>
-            )}
-          </>
-        )}
-      </div>
+      <SinglePlayerRoom
+        hasReachedLimit={hasReachedLimit}
+        realPosition={realPosition}
+        loading={loading}
+        handleStartGame={handleStartGame}
+        attemptsLeft={attemptsLeft}
+        isSettingsVisible={isSettingsVisible}
+        setIsSettingsVisible={setIsSettingsVisible}
+        isHowToPlayVisible={isHowToPlayVisible}
+        setIsHowToPlayVisible={setIsHowToPlayVisible}
+        timerActive={timerActive}
+        handleTimeout={handleTimeout}
+        hasTimedOut={hasTimedOut}
+        distanceKm={distanceKm}
+        t={t}
+      />
 
       {/* Always Visible Game Info Bar - Top */}
       {realPosition && !loading && (

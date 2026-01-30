@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useRoom } from '../hooks/useRoom';
 import { pickRandomStreetView } from '../utils/geo';
@@ -11,7 +10,6 @@ import Room from '../components/Room';
 const MultiplayerPage = () => {
   const navigate = useNavigate();
   const { roomCode: urlRoomCode } = useParams();
-  const [reconnecting, setReconnecting] = useState(false);
   
   const {
     room,
@@ -24,52 +22,11 @@ const MultiplayerPage = () => {
     timeLeft,
     createRoom,
     joinRoom,
-    reconnectToRoom,
     startGame,
     submitGuess,
     leaveRoom,
     resetRoom
   } = useRoom();
-
-  useEffect(() => {
-    const attemptReconnect = async () => {
-      if (urlRoomCode && !room && !reconnecting && !loading) {
-        setReconnecting(true);
-        
-        try {
-          const savedName = localStorage.getItem(`playerName_${playerId}`) || 'Jogador';
-          await reconnectToRoom(urlRoomCode.toUpperCase(), savedName);
-        } catch (err) {
-          console.error('Erro ao reconectar:', err);
-          navigate('/multiplayer', { replace: true });
-        } finally {
-          setReconnecting(false);
-        }
-      }
-    };
-
-    attemptReconnect();
-  }, [urlRoomCode, room, reconnecting, loading, reconnectToRoom, navigate, playerId]);
-
-  useEffect(() => {
-    const attemptReconnect = async () => {
-      if (urlRoomCode && !room && !reconnecting && !loading) {
-        setReconnecting(true);
-        
-        try {
-          const savedName = localStorage.getItem(`playerName_${playerId}`) || 'Jogador';
-          await reconnectToRoom(urlRoomCode.toUpperCase(), savedName);
-        } catch (err) {
-          console.error('Erro ao reconectar:', err);
-          navigate('/multiplayer', { replace: true });
-        } finally {
-          setReconnecting(false);
-        }
-      }
-    };
-
-    attemptReconnect();
-  }, [urlRoomCode, room, reconnecting, loading, reconnectToRoom, navigate, playerId]);
 
   // Wrapper para createRoom que atualiza a URL
   const handleCreateRoom = async (playerName, duration) => {
@@ -121,19 +78,13 @@ const MultiplayerPage = () => {
     }
   };
 
-  // Mostra loading durante reconexão
-  if (reconnecting) {
-    return (
-      <div className="h-full w-full bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center overflow-hidden">
-        <div className="text-center">
-          <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-indigo-600 border-t-transparent"></div>
-          <p className="mt-4 text-gray-700 dark:text-gray-300 font-medium">
-            Reconectando à sala...
-          </p>
-        </div>
-      </div>
-    );
-  }
+  // Handler para quando o usuário clica em "Voltar" no lobby
+  const handleBackToHome = () => {
+    // Limpa a URL se houver código
+    if (urlRoomCode) {
+      navigate('/multiplayer', { replace: true });
+    }
+  };
 
   // Se não está em nenhuma sala, mostra o lobby
   if (!room) {
@@ -143,6 +94,8 @@ const MultiplayerPage = () => {
         onJoinRoom={handleJoinRoom}
         loading={loading}
         error={error}
+        initialRoomCode={urlRoomCode ? urlRoomCode.toUpperCase() : null}
+        onBack={handleBackToHome}
       />
     );
   }

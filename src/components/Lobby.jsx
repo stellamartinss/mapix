@@ -6,11 +6,18 @@ import PropTypes from 'prop-types';
  * Componente Lobby - Tela inicial do modo multiplayer
  * Permite criar ou entrar em salas
  */
-const Lobby = ({ onCreateRoom, onJoinRoom, loading, error }) => {
-  const [mode, setMode] = useState(null); // 'create' | 'join' | null
+const Lobby = ({ onCreateRoom, onJoinRoom, loading, error, initialRoomCode = null, onBack = null }) => {
+  const [mode, setMode] = useState(initialRoomCode ? 'join' : null); // 'create' | 'join' | null
   const [playerName, setPlayerName] = useState('');
-  const [roomCode, setRoomCode] = useState('');
+  const [roomCode, setRoomCode] = useState(initialRoomCode || '');
   const [duration, setDuration] = useState(120);
+
+  const handleBackClick = () => {
+    setMode(null);
+    if (onBack) {
+      onBack();
+    }
+  };
 
   const handleCreateRoom = async (e) => {
     e.preventDefault();
@@ -76,7 +83,7 @@ const Lobby = ({ onCreateRoom, onJoinRoom, loading, error }) => {
       <div className="h-full w-full bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center p-4 overflow-auto">
         <div className="max-w-md w-full bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8">
           <button
-            onClick={() => setMode(null)}
+            onClick={handleBackClick}
             className="mb-4 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
           >
             ← Voltar
@@ -145,7 +152,7 @@ const Lobby = ({ onCreateRoom, onJoinRoom, loading, error }) => {
       <div className="h-full w-full bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center p-4 overflow-auto">
         <div className="max-w-md w-full bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8">
           <button
-            onClick={() => setMode(null)}
+            onClick={handleBackClick}
             className="mb-4 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
           >
             ← Voltar
@@ -184,8 +191,14 @@ const Lobby = ({ onCreateRoom, onJoinRoom, loading, error }) => {
                 placeholder="Ex: ABC123"
                 maxLength={6}
                 required
-                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent dark:bg-gray-700 dark:text-white uppercase"
+                disabled={!!initialRoomCode}
+                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent dark:bg-gray-700 dark:text-white uppercase disabled:opacity-60 disabled:cursor-not-allowed"
               />
+              {initialRoomCode && (
+                <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                  Código preenchido automaticamente do link
+                </p>
+              )}
             </div>
 
             {error && (
@@ -212,7 +225,9 @@ Lobby.propTypes = {
   onCreateRoom: PropTypes.func.isRequired,
   onJoinRoom: PropTypes.func.isRequired,
   loading: PropTypes.bool,
-  error: PropTypes.string
+  error: PropTypes.string,
+  initialRoomCode: PropTypes.string,
+  onBack: PropTypes.func
 };
 
 export default Lobby;
