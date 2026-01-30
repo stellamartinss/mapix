@@ -2,8 +2,8 @@ import { useMemo, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { GoogleMap, Marker } from '@react-google-maps/api';
 import { Trophy, Medal, Award, MapPin, LogOut } from 'lucide-react';
-import { haversineDistance } from '../utils/geo';
-import './styles/MultiplayerResult.css';
+import { haversineDistance } from '../../utils/geo';
+import '../styles/MultiplayerResult.css';
 
 const mapContainerStyle = {
   width: '100%',

@@ -1,8 +1,10 @@
 import { useNavigate, useParams } from 'react-router-dom';
 import { useRoom } from '../hooks/useRoom';
 import { pickRandomStreetView } from '../utils/geo';
-import Lobby, { WaitingRoom } from '../components/Lobby';
-import Room from '../components/Room';
+import Lobby from '../components/MultiPlayer/Lobby';
+import Room from '../components/MultiPlayer/Room';
+import WaitingRoom from '../components/MultiPlayer/WaitingRoom';
+import { useEffect } from 'react';
 
 /**
  * Página principal do modo multiplayer
@@ -25,8 +27,28 @@ const MultiplayerPage = () => {
     startGame,
     submitGuess,
     leaveRoom,
-    resetRoom
+    resetRoom,
+    reconnectToRoom
   } = useRoom();
+
+  useEffect(() => {
+    // Se houver um código de sala na URL, tenta entrar nela automaticamente
+    const tryJoinRoom = async () => {
+      if (urlRoomCode) {
+        const playerNameFromStorage = localStorage.getItem('playerId') || '';
+        const playerName = playerNameFromStorage ? localStorage.getItem(`playerName_${playerNameFromStorage}`) : null;
+
+        if (playerName) {
+          await reconnectToRoom(urlRoomCode, playerName);
+        } else {
+          // Se não houver nome salvo, redireciona para o lobby
+          navigate('/multiplayer', { replace: true });
+        }
+      }
+    };
+
+    tryJoinRoom();
+  }, [urlRoomCode, reconnectToRoom, navigate]);
 
   // Wrapper para createRoom que atualiza a URL
   const handleCreateRoom = async (playerName, duration) => {
@@ -102,6 +124,7 @@ const MultiplayerPage = () => {
 
   // Se está aguardando jogadores
   if (room.status === 'waiting') {
+    debugger
     return (
       <WaitingRoom
         room={room}

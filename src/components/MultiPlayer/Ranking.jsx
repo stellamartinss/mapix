@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { Trophy, Medal, Award, MapPin, LogOut } from 'lucide-react';
-import { haversineDistance } from '../utils/geo';
+import { haversineDistance } from '../../utils/geo';
 
 /**
  * Componente Ranking - Exibe o ranking final da rodada

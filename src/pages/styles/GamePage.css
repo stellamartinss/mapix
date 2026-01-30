@@ -488,7 +488,8 @@
   }
 
   .timer-overlay {
-    top: 140px;
+    top: 100px;
     left: 12px;
+    z-index: 50;
   }
 }
