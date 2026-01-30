@@ -1,21 +1,51 @@
 import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { useTranslation } from '../hooks/useTranslation';
-import OnboardingTypewriter from './OnboardingTypewriter';
+import OnboardingTypewriter from '../components/OnboardingTypewriter';
+import SettingsButton from '../components/SettingsButton';
+import FloatingPanel from '../components/FloatingPanel';
+import LanguageToggle from '../components/LanguageToggle';
 import { Users } from 'lucide-react';
+import { useState } from 'react';
 
-import './styles/OnboardingTypewriter.css';
+import '../../src/components/styles/OnboardingTypewriter.css';
 
-function StartScreen({
-  onStart,
-  isBlocked,
-  attemptsLeft,
-}) {
+function StartScreen() {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
+  const [isSettingsVisible, setIsSettingsVisible] = useState(false);
+
+  const handleStartGame = () => {
+    navigate('/game');
+  };
+
   return (
     <>
+      <div className='game-info-bar_transparent '>
+        <div className='game-info-left'></div>
+
+        <div className='game-info-right'>
+          <SettingsButton
+            setIsSettingsVisible={setIsSettingsVisible}
+            isSettingsVisible={isSettingsVisible}
+          />
+        </div>
+      </div>
+
+      <FloatingPanel
+        isOpen={isSettingsVisible}
+        onClose={() => setIsSettingsVisible(false)}
+        position='top'
+        title={t('settings') || 'Configurações'}
+      >
+        <div className='settings-panel-content'>
+          <div className='setting-item'>
+            <label>{t('language') || 'Idioma'}</label>
+            <LanguageToggle />
+          </div>
+        </div>
+      </FloatingPanel>
       <div className='grid place-items-center py-12 px-6'>
         <div className='max-w-[600px] text-center flex flex-col gap-6'>
           <div className='text-6xl mb-2 md:text-8xl'>
@@ -27,37 +57,17 @@ function StartScreen({
           </div>
 
           <OnboardingTypewriter />
-
-          {isBlocked ? (
-            <div className='p-5 bg-red-50 dark:bg-red-950 border-2 border-red-200 dark:border-red-900 rounded-xl text-red-900 dark:text-red-300'>
-              <p className='my-2'>{t('roundLimitMessage')}</p>
-              <p className='my-2'>{t('upgrade')}</p>
-            </div>
-          ) : (
-            <>
-              {attemptsLeft !== null && (
-                <div className='py-3 px-5 bg-slate-100 dark:bg-slate-800 rounded-xl text-sm text-slate-600 dark:text-slate-400'>
-                  <span>
-                    {t('attemptsRemaining')}:{' '}
-                    <strong className='text-slate-900 dark:text-slate-100 font-bold'>
-                      {attemptsLeft}
-                    </strong>
-                  </span>
-                </div>
-              )}
-            </>
-          )}
         </div>
         <div className='flex flex-col gap-3 w-full max-w-md'>
           <button
             className='onboarding-cta-inline w-full'
-            onClick={onStart}
+            onClick={handleStartGame}
             type='button'
             aria-label={t('onboardingCTA')}
           >
             {t('onboardingCTA')}
           </button>
-          
+
           <button
             className='flex items-center justify-center gap-2 px-6 py-3 bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 text-white font-bold rounded-lg transition-colors w-full'
             onClick={() => navigate('/multiplayer')}
@@ -65,7 +75,7 @@ function StartScreen({
             aria-label='Modo Multiplayer'
           >
             <Users className='w-5 h-5' />
-            Modo Multiplayer
+            {t('multiplayer_multiplayerMode')}
           </button>
         </div>
       </div>

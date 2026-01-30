@@ -1,18 +1,20 @@
+import { useEffect, useMemo, useCallback, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useRoom } from '../hooks/useRoom';
-import { pickRandomStreetView } from '../utils/geo';
 import Lobby from '../components/MultiPlayer/Lobby';
 import Room from '../components/MultiPlayer/Room';
 import WaitingRoom from '../components/MultiPlayer/WaitingRoom';
-import { useEffect } from 'react';
+import SettingsButton from '../components/SettingsButton';
+import LanguageToggle from '../components/LanguageToggle';
+import FloatingPanel from '../components/FloatingPanel';
+import { useTranslation } from '../hooks/useTranslation';
+import { pickRandomStreetView } from '../utils/geo';
 
-/**
- * Página principal do modo multiplayer
- */
-const MultiplayerPage = () => {
+export default function MultiplayerPage() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { roomCode: urlRoomCode } = useParams();
-  
+
   const {
     room,
     loading,
@@ -24,134 +26,171 @@ const MultiplayerPage = () => {
     timeLeft,
     createRoom,
     joinRoom,
-    startGame,
     submitGuess,
     leaveRoom,
     resetRoom,
-    reconnectToRoom
+    startGame,
+    reconnectToRoom,
   } = useRoom();
 
+  const [isSettingsVisible, setIsSettingsVisible] = useState(false);
+  const [isStarting, setIsStarting] = useState(false);
+
   useEffect(() => {
-    // Se houver um código de sala na URL, tenta entrar nela automaticamente
-    const tryJoinRoom = async () => {
-      if (urlRoomCode) {
-        const playerNameFromStorage = localStorage.getItem('playerId') || '';
-        const playerName = playerNameFromStorage ? localStorage.getItem(`playerName_${playerNameFromStorage}`) : null;
+    if (!urlRoomCode) return;
 
-        if (playerName) {
-          await reconnectToRoom(urlRoomCode, playerName);
-        } else {
-          // Se não houver nome salvo, redireciona para o lobby
-          navigate('/multiplayer', { replace: true });
-        }
-      }
-    };
+    const playerIdFromStorage = localStorage.getItem('playerId');
+    const playerName = playerIdFromStorage
+      ? localStorage.getItem(`playerName_${playerIdFromStorage}`)
+      : null;
 
-    tryJoinRoom();
+    if (!playerName) {
+      navigate('/multiplayer', { replace: true });
+      return;
+    }
+
+    reconnectToRoom(urlRoomCode, playerName);
   }, [urlRoomCode, reconnectToRoom, navigate]);
 
-  // Wrapper para createRoom que atualiza a URL
-  const handleCreateRoom = async (playerName, duration) => {
-    // Salva o nome do jogador
-    localStorage.setItem(`playerName_${playerId}`, playerName);
-    
-    const roomCode = await createRoom(playerName, duration);
-    
-    // Atualiza a URL com o código da sala
-    navigate(`/multiplayer/${roomCode}`, { replace: true });
-    
-    return roomCode;
-  };
+  const handleCreateRoom = useCallback(
+    async (playerName, duration) => {
+      localStorage.setItem(`playerName_${playerId}`, playerName);
+      const roomCode = await createRoom(playerName, duration);
+      navigate(`/multiplayer/${roomCode}`, { replace: true });
+      return roomCode;
+    },
+    [createRoom, navigate, playerId],
+  );
 
-  // Wrapper para joinRoom que atualiza a URL
-  const handleJoinRoom = async (roomCode, playerName) => {
-    // Salva o nome do jogador
-    localStorage.setItem(`playerName_${playerId}`, playerName);
-    
-    const normalizedCode = await joinRoom(roomCode, playerName);
-    
-    // Atualiza a URL com o código da sala
-    navigate(`/multiplayer/${normalizedCode}`, { replace: true });
-    
-    return normalizedCode;
-  };
+  const handleJoinRoom = useCallback(
+    async (roomCode, playerName) => {
+      localStorage.setItem(`playerName_${playerId}`, playerName);
+      const normalizedCode = await joinRoom(roomCode, playerName);
+      navigate(`/multiplayer/${normalizedCode}`, { replace: true });
+      return normalizedCode;
+    },
+    [joinRoom, navigate, playerId],
+  );
 
-  // Inicia o jogo quando o criador clica em "Iniciar"
-  const handleStartGame = async () => {
+  const handleStartGame = useCallback(async () => {
     try {
+      setIsStarting(true);
       console.log('Gerando localização com Street View...');
       const location = await pickRandomStreetView();
-      console.log('Localização gerada:', location);
       await startGame(location);
     } catch (err) {
       console.error('Erro ao iniciar jogo:', err);
       alert('Erro ao gerar localização. Tente novamente.');
+    } finally {
+      setIsStarting(false);
     }
-  };
+  }, [startGame]);
 
-  // Sai da sala e volta ao lobby
-  const handleLeaveRoom = async () => {
-    try {
-      await leaveRoom();
-      // Remove o código da URL ao sair
-      navigate('/multiplayer', { replace: true });
-    } catch (err) {
-      console.error('Erro ao sair da sala:', err);
-    }
-  };
+  const handleLeaveRoom = useCallback(async () => {
+    await leaveRoom();
+    navigate('/multiplayer', { replace: true });
+  }, [leaveRoom, navigate]);
 
-  // Handler para quando o usuário clica em "Voltar" no lobby
-  const handleBackToHome = () => {
-    // Limpa a URL se houver código
+  const handleBackToHome = useCallback(() => {
     if (urlRoomCode) {
       navigate('/multiplayer', { replace: true });
     }
-  };
+  }, [urlRoomCode, navigate]);
 
-  // Se não está em nenhuma sala, mostra o lobby
-  if (!room) {
-    return (
-      <Lobby
-        onCreateRoom={handleCreateRoom}
-        onJoinRoom={handleJoinRoom}
-        loading={loading}
-        error={error}
-        initialRoomCode={urlRoomCode ? urlRoomCode.toUpperCase() : null}
-        onBack={handleBackToHome}
-      />
-    );
-  }
+  const showSettings = !room || room.status === 'waiting';
 
-  // Se está aguardando jogadores
-  if (room.status === 'waiting') {
-    debugger
+  const content = useMemo(() => {
+    if (!room) {
+      return (
+        <Lobby
+          onCreateRoom={handleCreateRoom}
+          onJoinRoom={handleJoinRoom}
+          loading={loading}
+          error={error}
+          initialRoomCode={urlRoomCode?.toUpperCase() ?? null}
+          onBack={handleBackToHome}
+        />
+      );
+    }
+
+    if (room.status === 'waiting') {
+      return (
+        <WaitingRoom
+          room={room}
+          players={players}
+          isCreator={isCreator}
+          onStartGame={handleStartGame}
+          onLeave={handleLeaveRoom}
+          loading={loading || isStarting}
+        />
+      );
+    }
+
     return (
-      <WaitingRoom
+      <Room
         room={room}
         players={players}
+        playerId={playerId}
+        timeLeft={timeLeft}
+        hasGuessed={hasGuessed}
         isCreator={isCreator}
-        onStartGame={handleStartGame}
+        onSubmitGuess={submitGuess}
         onLeave={handleLeaveRoom}
+        onPlayAgain={resetRoom}
         loading={loading}
       />
     );
-  }
+  }, [
+    room,
+    players,
+    playerId,
+    timeLeft,
+    hasGuessed,
+    isCreator,
+    submitGuess,
+    handleLeaveRoom,
+    resetRoom,
+    loading,
+    handleCreateRoom,
+    handleJoinRoom,
+    error,
+    urlRoomCode,
+    handleBackToHome,
+    handleStartGame,
+    isStarting,
+  ]);
 
-  // Se está jogando ou terminou
   return (
-    <Room
-      room={room}
-      players={players}
-      playerId={playerId}
-      timeLeft={timeLeft}
-      hasGuessed={hasGuessed}
-      isCreator={isCreator}
-      onSubmitGuess={submitGuess}
-      onLeave={handleLeaveRoom}
-      onPlayAgain={resetRoom}
-      loading={loading}
-    />
-  );
-};
+    <>
+      {showSettings && (
+        <>
+          <div className='game-info-bar_transparent'>
+            <div className='game-info-left' />
+            <div className='game-info-right'>
+              <SettingsButton
+                isSettingsVisible={isSettingsVisible}
+                setIsSettingsVisible={setIsSettingsVisible}
+              />
+            </div>
+          </div>
 
-export default MultiplayerPage;
+          <FloatingPanel
+            isOpen={isSettingsVisible}
+            onClose={() => setIsSettingsVisible(false)}
+            position='top'
+            title={t('settings') || 'Configurações'}
+          >
+            <div className='settings-panel-content'>
+              <div className='setting-item'>
+                <label>{t('language') || 'Idioma'}</label>
+                <LanguageToggle />
+              </div>
+            </div>
+          </FloatingPanel>
+        </>
+      )}
+
+      {content}
+    </>
+  );
+}

@@ -1,6 +1,6 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import GameplayView from '../components/GameplayView';
-import StartScreen from '../components/StartScreen';
+import StartScreen from './StartScreen';
 import RoundLimitReached from '../components/RoundLimitReached';
 import { useAuth } from '../hooks/useAuth';
 import { useRoundLimit } from '../hooks/useRoundLimit';
@@ -22,7 +22,8 @@ export default function GamePage() {
     getRemainingRounds,
   } = useRoundLimit();
   const { t } = useTranslation();
-  const { isMusicEnabled, isPlaying, play, pause, toggleMusic } = useBackgroundMusic();
+  const { isMusicEnabled, isPlaying, play, pause, toggleMusic } =
+    useBackgroundMusic();
 
   const [realPosition, setRealPosition] = useState(null);
   const [guessPosition, setGuessPosition] = useState(null);
@@ -65,7 +66,13 @@ export default function GamePage() {
     if (isMusicEnabled && !isPlaying) {
       play();
     }
-  }, [handlePickRandomStreetView, canPlayNewRound, isMusicEnabled, isPlaying, play]);
+  }, [
+    handlePickRandomStreetView,
+    canPlayNewRound,
+    isMusicEnabled,
+    isPlaying,
+    play,
+  ]);
 
   const handleGuess = useCallback(() => {
     if (!realPosition || !guessPosition) return;
@@ -107,7 +114,13 @@ export default function GamePage() {
     if (isMusicEnabled && !isPlaying) {
       play();
     }
-  }, [handlePickRandomStreetView, canPlayNewRound, isMusicEnabled, isPlaying, play]);
+  }, [
+    handlePickRandomStreetView,
+    canPlayNewRound,
+    isMusicEnabled,
+    isPlaying,
+    play,
+  ]);
 
   const handleGuessConfirm = useCallback(() => {
     handleGuess();
@@ -115,12 +128,11 @@ export default function GamePage() {
     // Keep map visible after confirming guess
   }, [handleGuess, pause]);
 
-  // Determine overlay content for start screen or limit reached
-  const overlayContent = hasReachedLimit ? (
-    <RoundLimitReached />
-  ) : !realPosition && !loading ? (
-    <StartScreen onStart={handleStartGame} attemptsLeft={attemptsLeft} />
-  ) : null;
+  const overlayContent = hasReachedLimit ? <RoundLimitReached /> : null;
+
+  useEffect(() => {
+    handleStartGame();
+  }, []);
 
   // Top bar left content
   const topBarLeft = (
@@ -136,45 +148,30 @@ export default function GamePage() {
 
   return (
     <GameplayView
-      // Core game state
       realPosition={realPosition}
       guessPosition={guessPosition}
       onGuessChange={setGuessPosition}
       loading={loading}
-      
-      // Round state
       distanceKm={distanceKm}
       lastScore={lastScore}
       hasGuessed={false}
-      
-      // Timer
       showTimer={true}
       timerDuration={75}
       timerActive={timerActive}
       onTimeout={handleTimeout}
       hasTimedOut={hasTimedOut}
-      
-      // Actions
       onGuessConfirm={handleGuessConfirm}
       onPlayAgain={handlePlayAgain}
       disableConfirm={!guessPosition || loading || hasReachedLimit}
       disableInteraction={hasReachedLimit}
       disablePlayAgain={loading}
-      
-      // History
       history={history}
       showHistory={true}
-      
-      // Top bar
       topBarLeft={topBarLeft}
       showFeedbackInTopBar={true}
-      
-      // Settings
       showSettings={true}
       isMusicEnabled={isMusicEnabled}
       onToggleMusic={toggleMusic}
-      
-      // Overlay
       overlayContent={overlayContent}
     />
   );

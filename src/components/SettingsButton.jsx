@@ -5,6 +5,7 @@ export default function SettingsButton({
   isSettingsVisible,
 }) {
   const {t} = useTranslation();
+  
   return (
     <button
       className='settings-btn'

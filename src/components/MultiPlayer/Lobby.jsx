@@ -1,14 +1,13 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Users } from 'lucide-react';
 import PropTypes from 'prop-types';
-import { useRoom } from '../../hooks/useRoom';
-import { useNavigate } from 'react-router-dom';
+import { useTranslation } from '../../hooks/useTranslation';
 
 /**
  * Componente Lobby - Tela inicial do modo multiplayer
  * Permite criar ou entrar em salas
  */
-function Lobby ({
+function Lobby({
   onCreateRoom,
   onJoinRoom,
   loading,
@@ -16,6 +15,7 @@ function Lobby ({
   initialRoomCode = null,
   onBack = null,
 }) {
+  const { t } = useTranslation();
 
   const [mode, setMode] = useState(initialRoomCode ? 'join' : null); // 'create' | 'join' | null
   const [playerName, setPlayerName] = useState('');
@@ -59,10 +59,10 @@ function Lobby ({
           <div className='text-center'>
             <Users className='mx-auto h-16 w-16 text-indigo-600 dark:text-indigo-400' />
             <h2 className='mt-6 text-3xl font-extrabold text-gray-900 dark:text-white'>
-              Modo Multiplayer
+              {t('multiplayer_multiplayerMode')}
             </h2>
             <p className='mt-2 text-sm text-gray-600 dark:text-gray-400'>
-              Jogue com seus amigos em tempo real
+              {t('multiplayer_description')}
             </p>
           </div>
 
@@ -72,14 +72,14 @@ function Lobby ({
               className='w-full flex items-center justify-center px-4 py-4 border border-transparent text-base font-medium rounded-lg text-white bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 transition-colors'
             >
               <Users className='mr-2 h-5 w-5' />
-              Criar Sala
+              {t('buttons_createRoom')}
             </button>
 
             <button
               onClick={() => setMode('join')}
               className='w-full flex items-center justify-center px-4 py-4 border-2 border-indigo-600 dark:border-indigo-400 text-base font-medium rounded-lg text-indigo-600 dark:text-indigo-400 bg-white dark:bg-gray-800 hover:bg-indigo-50 dark:hover:bg-gray-700 transition-colors'
             >
-              Entrar em Sala
+              {t('buttons_joinRoom')}
             </button>
           </div>
         </div>
@@ -96,11 +96,11 @@ function Lobby ({
             onClick={handleBackClick}
             className='mb-4 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
           >
-            ← Voltar
+            {t('buttons_back')}
           </button>
 
           <h2 className='text-2xl font-bold text-gray-900 dark:text-white mb-6'>
-            Criar Nova Sala
+            {t('buttons_createRoom')}
           </h2>
 
           <form onSubmit={handleCreateRoom} className='space-y-4'>
@@ -109,7 +109,7 @@ function Lobby ({
                 htmlFor='playerName'
                 className='block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2'
               >
-                Seu Nome
+                {t('labels_playerName')}
               </label>
               <input
                 type='text'
@@ -128,7 +128,7 @@ function Lobby ({
                 htmlFor='duration'
                 className='block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2'
               >
-                Duração da Rodada
+                {t('labels_duration')}
               </label>
               <select
                 id='duration'
@@ -136,11 +136,10 @@ function Lobby ({
                 onChange={(e) => setDuration(Number(e.target.value))}
                 className='w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent dark:bg-gray-700 dark:text-white'
               >
-                <option value={60}>1 minuto</option>
-                <option value={120}>2 minutos</option>
-                <option value={180}>3 minutos</option>
-                <option value={300}>5 minutos</option>
-                <option value={18000}>5 horas</option>
+                <option value={60}>{t('durationOptions_oneMinute')}</option>
+                <option value={120}>{t('durationOptions_twoMinutes')}</option>
+                <option value={180}>{t('durationOptions_threeMinutes')}</option>
+                <option value={300}>{t('durationOptions_fiveMinutes')}</option>
               </select>
             </div>
 
@@ -155,7 +154,9 @@ function Lobby ({
               disabled={loading || !playerName.trim()}
               className='w-full px-4 py-3 bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 text-white font-medium rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors'
             >
-              {loading ? 'Criando...' : 'Criar Sala'}
+              {loading
+                ? t('buttons_creating')
+                : t('buttons_createRoom')}
             </button>
           </form>
         </div>
@@ -172,11 +173,11 @@ function Lobby ({
             onClick={handleBackClick}
             className='mb-4 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
           >
-            ← Voltar
+            {t('buttons_back')}
           </button>
 
           <h2 className='text-2xl font-bold text-gray-900 dark:text-white mb-6'>
-            Entrar em Sala
+            {t('multiplayer_joinRoom')}
           </h2>
 
           <form onSubmit={handleJoinRoom} className='space-y-4'>
@@ -185,7 +186,7 @@ function Lobby ({
                 htmlFor='joinPlayerName'
                 className='block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2'
               >
-                Seu Nome
+                {t('labels_playerName')}
               </label>
               <input
                 type='text'
@@ -204,7 +205,7 @@ function Lobby ({
                 htmlFor='roomCode'
                 className='block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2'
               >
-                Código da Sala
+                {t('labels_roomCode')}
               </label>
               <input
                 type='text'
@@ -219,7 +220,7 @@ function Lobby ({
               />
               {initialRoomCode && (
                 <p className='mt-1 text-xs text-gray-500 dark:text-gray-400'>
-                  Código preenchido automaticamente do link
+                  {t('hints_roomCodeFromLink')}
                 </p>
               )}
             </div>
@@ -235,14 +236,14 @@ function Lobby ({
               disabled={loading || !playerName.trim() || !roomCode.trim()}
               className='w-full px-4 py-3 bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 text-white font-medium rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors'
             >
-              {loading ? 'Entrando...' : 'Entrar'}
+              {loading ? t('buttons_entering') : t('buttons_joinRoom')}
             </button>
           </form>
         </div>
       </div>
     );
   }
-};
+}
 
 Lobby.propTypes = {
   onCreateRoom: PropTypes.func.isRequired,

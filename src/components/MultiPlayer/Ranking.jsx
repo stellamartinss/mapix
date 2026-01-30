@@ -2,11 +2,13 @@ import { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { Trophy, Medal, Award, MapPin, LogOut } from 'lucide-react';
 import { haversineDistance } from '../../utils/geo';
+import { useTranslation } from '../../hooks/useTranslation';
 
 /**
  * Componente Ranking - Exibe o ranking final da rodada
  */
 const Ranking = ({ room, players, playerId, onLeave }) => {
+  const { t } = useTranslation();
   // Calcula distâncias e ordena jogadores
   const rankedPlayers = useMemo(() => {
     if (!room.location) return [];
@@ -60,10 +62,10 @@ const Ranking = ({ room, players, playerId, onLeave }) => {
         {/* Header */}
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-white mb-2">
-            🎉 Resultado Final
+            🎉 {t('ranking_resultadoFinal')}
           </h1>
           <p className="text-gray-400">
-            Sala: <code className="text-indigo-400 font-mono">{room.code}</code>
+            {t('ranking_room')}: <code className="text-indigo-400 font-mono">{room.code}</code>
           </p>
         </div>
 
@@ -112,7 +114,7 @@ const Ranking = ({ room, players, playerId, onLeave }) => {
         <div className="bg-gray-800 rounded-xl shadow-2xl p-6 mb-6">
           <h2 className="text-2xl font-bold text-white mb-4 flex items-center gap-2">
             <Trophy className="w-6 h-6 text-yellow-500" />
-            Ranking Completo
+            {t('ranking_fullRanking')}
           </h2>
 
           <div className="space-y-3">
@@ -143,7 +145,7 @@ const Ranking = ({ room, players, playerId, onLeave }) => {
                       {player.name}
                       {player.id === playerId && (
                         <span className="ml-2 px-2 py-1 text-xs bg-indigo-600 rounded">
-                          Você
+                          {t('finalResults_you')}
                         </span>
                       )}
                     </p>
@@ -157,7 +159,7 @@ const Ranking = ({ room, players, playerId, onLeave }) => {
                 {/* Badge de vitória */}
                 {index === 0 && (
                   <div className="px-3 py-1 bg-yellow-500 text-yellow-900 rounded-full text-sm font-bold">
-                    Vencedor!
+                    {t('finalResults_winner')}
                   </div>
                 )}
               </div>
@@ -168,7 +170,7 @@ const Ranking = ({ room, players, playerId, onLeave }) => {
           {players.filter(p => !p.guess).length > 0 && (
             <div className="mt-6 pt-6 border-t border-gray-700">
               <h3 className="text-sm font-semibold text-gray-400 mb-2">
-                Não participaram:
+                {t('ranking_noParticipants')}
               </h3>
               <div className="flex flex-wrap gap-2">
                 {players
@@ -192,7 +194,7 @@ const Ranking = ({ room, players, playerId, onLeave }) => {
             <h3 className="text-xl font-bold text-white mb-2">Sua Performance</h3>
             <div className="grid grid-cols-2 gap-4 text-center">
               <div>
-                <p className="text-gray-300 text-sm">Posição</p>
+                <p className="text-gray-300 text-sm">{t('finalResults_position')}</p>
                 <p className="text-3xl font-bold text-indigo-400">
                   {currentPlayerRank}º
                 </p>
@@ -214,14 +216,14 @@ const Ranking = ({ room, players, playerId, onLeave }) => {
             className="flex-1 flex items-center justify-center gap-2 px-6 py-4 bg-red-600 hover:bg-red-700 text-white font-bold rounded-lg transition-colors"
           >
             <LogOut className="w-5 h-5" />
-            Sair da Sala
+            {t('leaveRoom2')}
           </button>
         </div>
 
         {/* Localização real */}
         <div className="mt-6 text-center">
           <p className="text-sm text-gray-400">
-            Localização real: {room.location.lat.toFixed(6)}, {room.location.lng.toFixed(6)}
+            {t('finalResults_realLocation')}: {room.location.lat.toFixed(6)}, {room.location.lng.toFixed(6)}
           </p>
         </div>
       </div>

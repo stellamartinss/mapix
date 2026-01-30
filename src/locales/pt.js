@@ -6,7 +6,7 @@ export default {
 
   // Buttons
   startGame: 'Começar Jogo',
-  playAgain: 'Tentar Novamente',
+  tryAgain: 'Tentar Novamente',
   confirmGuess: 'É aqui!',
   tryTomorrow: '🔄 Tentar novamente amanhã',
   upgrade: '⭐ Fazer upgrade (em breve)',
@@ -14,22 +14,25 @@ export default {
   // Messages
   timeout: '⏰ Tempo esgotado!',
   roundLimitTitle: 'Limite de rodadas grátis atingido!',
-  roundLimitMessage: 'Você jogou 5 rodadas hoje. Volte amanhã para continuar jogando!',
-  roundLimitReset: 'Suas rodadas resetam automaticamente todos os dias às 00:00',
-  
+  roundLimitMessage:
+    'Você jogou 5 rodadas hoje. Volte amanhã para continuar jogando!',
+  roundLimitReset:
+    'Suas rodadas resetam automaticamente todos os dias às 00:00',
+
   // Feedback
   distance: 'Distância',
   score: 'Pontos',
-  
+
   // Last Guesses
   lastGuesses: 'Últimos palpites',
   noGuesses: 'Nenhum palpite ainda',
   viewHistory: 'Ver histórico',
   hideHistory: 'Esconder histórico',
-  
+
   // Start Screen
   welcomeTitle: 'Bem-vindo ao Mapin!',
-  welcomeDescription: 'Descubra onde o Street View está. Você tem 75 segundos para fazer seu palpite!',
+  welcomeDescription:
+    'Descubra onde o Street View está. Você tem 75 segundos para fazer seu palpite!',
   howToPlay: 'Como jogar',
   step1: '1. Observe a imagem do Street View',
   step2: '2. Clique no mapa onde você acha que está',
@@ -39,7 +42,7 @@ export default {
   // API Key Error (App.jsx)
   apiKeyError: 'Adicione sua chave do Google Maps em um arquivo',
   apiKeyWith: 'com:',
-  
+
   // Attempts Counter (AttemptsCounter.jsx)
   noAttemptsLeft: 'Sem tentativas restantes',
   attempt: 'tentativa',
@@ -47,13 +50,13 @@ export default {
   remaining: 'restante',
   remainingPlural: 'restantes',
   guestMode: '(modo convidado)',
-  
+
   // Dark Mode Toggle (DarkModeToggle.jsx)
   enableLightMode: 'Ativar modo claro',
   enableDarkMode: 'Ativar modo escuro',
   lightMode: 'Modo claro',
   darkMode: 'Modo escuro',
-  
+
   // Guess Feedback (GuessFeedback.jsx)
   perfect: '🎯 Perfeito! Você acertou na mosca!',
   excellent: '🌟 Excelente! Muito próximo!',
@@ -64,7 +67,7 @@ export default {
   veryFar: '😢 Muito longe! Tente novamente!',
   distanceBetweenPoints: 'Distância entre os pontos:',
   scoreLabel: 'Pontuação:',
-  
+
   // Guess History (GuessHistory.jsx)
   perfectShort: 'Perfeito!',
   excellentShort: 'Excelente',
@@ -77,11 +80,11 @@ export default {
   pointsLabel: 'Pontos:',
   guessLabel: 'Palpite:',
   realLabel: 'Real:',
-  
+
   // Language Toggle (LanguageToggle.jsx)
   switchToEnglish: 'Switch to English',
   switchToPortuguese: 'Mudar para Português',
-  
+
   // Street View (StreetView.jsx)
   generatingRandomPoint: 'Gerando um ponto aleatório...',
   loadingStreetView: 'Carregando Street View. Aguarde um instante.',
@@ -103,17 +106,24 @@ export default {
 
   // How to Play
   howToPlayTitle: 'Como Jogar',
-  howToPlayIntro: 'Bem-vindo ao Mapin! Seu objetivo é identificar o local mostrado no Street View.',
+  howToPlayIntro:
+    'Bem-vindo ao Mapin! Seu objetivo é identificar o local mostrado no Street View.',
   howToPlayStep1Title: '1️⃣ Observe',
-  howToPlayStep1Desc: 'Examine cuidadosamente a imagem do Street View. Procure por pontos de referência, placas, arquitetura, vegetação e qualquer pista visual.',
+  howToPlayStep1Desc:
+    'Examine cuidadosamente a imagem do Street View. Procure por pontos de referência, placas, arquitetura, vegetação e qualquer pista visual.',
   howToPlayStep2Title: '2️⃣ Analise',
-  howToPlayStep2Desc: 'Use as pistas disponíveis para reduzir as possíveis localizações. Pense no país, região ou cidade.',
+  howToPlayStep2Desc:
+    'Use as pistas disponíveis para reduzir as possíveis localizações. Pense no país, região ou cidade.',
   howToPlayStep3Title: '3️⃣ Marque',
-  howToPlayStep3Desc: 'Clique no mapa onde você acha que é a localização. Seja o mais preciso possível.',
+  howToPlayStep3Desc:
+    'Clique no mapa onde você acha que é a localização. Seja o mais preciso possível.',
   howToPlayStep4Title: '4️⃣ Confirme',
-  howToPlayStep4Desc: 'Clique em "É aqui!" para enviar seu palpite antes do tempo acabar (75 segundos).',
-  howToPlayScoring: '🎯 Pontuação: Quanto mais próximo seu palpite, maior sua pontuação! Palpites perfeitos ganham pontos máximos.',
-  howToPlayTips: '💡 Dicas: Preste atenção no idioma das placas, tipos de veículos, paisagem e estilo arquitetônico.',
+  howToPlayStep4Desc:
+    'Clique em "É aqui!" para enviar seu palpite antes do tempo acabar (75 segundos).',
+  howToPlayScoring:
+    '🎯 Pontuação: Quanto mais próximo seu palpite, maior sua pontuação! Palpites perfeitos ganham pontos máximos.',
+  howToPlayTips:
+    '💡 Dicas: Preste atenção no idioma das placas, tipos de veículos, paisagem e estilo arquitetônico.',
 
   // Onboarding
   onboarding1: 'Você acordou.',
@@ -129,5 +139,68 @@ export default {
   onboarding11: 'Marque o local.',
   onboarding12: 'Se errar…',
   onboarding13: 'o resgate não acontece.',
-  onboardingCTA: 'Onde você está?',
+  onboardingCTA: 'Jogar',
+
+  multiplayer_multiplayerMode: 'Modo Multiplayer',
+  multiplayer_createRoom: 'Criar Nova Sala',
+  multiplayer_joinRoom: 'Entrar em Sala',
+  multiplayer_description: 'Jogue com seus amigos em tempo real',
+  buttons_createRoom: 'Criar Sala',
+  buttons_joinRoom: 'Entrar em Sala',
+  buttons_back: '← Voltar',
+  buttons_creating: 'Criando...',
+  buttons_entering: 'Entrando...',
+
+  labels_playerName: 'Seu Nome',
+  labels_roomCode: 'Código da Sala',
+  labels_duration: 'Duração da Rodada',
+
+  placeholders_playerName: 'Digite seu nome',
+  placeholders_roomCode: 'Ex: ABC123',
+
+  durationOptions_oneMinute: '1 minuto',
+  durationOptions_twoMinutes: '2 minutos',
+  durationOptions_threeMinutes: '3 minutos',
+  durationOptions_fiveMinutes: '5 minutos',
+
+  hints_roomCodeFromLink: 'Código preenchido automaticamente do link',
+
+  errors_createRoom: 'Erro ao criar sala:',
+  errors_joinRoom: 'Erro ao entrar na sala:',
+
+  finalResults_title: 'Resultados Finais',
+  finalResults_yourPosition: 'Sua Posição',
+  finalResults_position: 'Posição',
+  finalResults_positionSuffix: 'º lugar',
+  playAgain: 'Jogar Novamente',
+  leaveRoom: 'Sair',
+  leaveRoom2: 'Sair da Sala',
+  finalResults_subtitle: 'Legenda',
+  finalResults_realLocation: 'Localização Real',
+  finalResults_players: 'jogadores',
+  finalResults_players_capital: 'Jogadores',
+  finalResults_ranking: 'Ranking',
+  finalResults_you: 'Você',
+  finalResults_winner: 'Vencedor!',
+  finalResults_noParticipants: 'Não participaram:',
+
+  ranking_resultadoFinal: 'Resultado Final',
+  ranking_room:"Sala",
+  ranking_fullRanking: 'Ranking Completo',
+
+  guess: 'palpites',
+  guessFeedback_sent: 'Palpite enviado!',
+  waitingForOtherPlayers: 'Aguardando outros jogadores...',
+  waitingRoom: 'Sala de Espera',
+
+  linkCopied: 'Link copiado!',
+  copyRoomLink: 'Copiar link da sala',
+  shareLinkWithFriends: 'Compartilhe o link ou código com seus amigos',
+  creator: 'Criador',
+
+  buttons_initiating: 'Iniciando...',
+  buttons_startGame: 'Iniciar Jogo',
+  waitingForCreatorToStart: 'Aguardando o criador iniciar o jogo...',
+  waitingForMorePlayers: 'Aguardando mais jogadores para começar...',
+
 };

@@ -12,20 +12,9 @@ import HowToPlayButton from './HowToPlayButton';
 import SettingsButton from './SettingsButton';
 import LanguageToggle from '../components/LanguageToggle';
 import MusicToggle from '../components/MusicToggle';
+import RoundLimitReached from '../components/RoundLimitReached';
 import { useTranslation } from '../hooks/useTranslation';
 
-/**
- * GameplayView - Shared gameplay UI component
- * 
- * This component handles the core gameplay experience:
- * - Street View rendering
- * - Guess map UI
- * - Timer display
- * - Floating panels (map, history, settings)
- * - Feedback display
- * 
- * Can be used for both single-player and multiplayer modes
- */
 const GameplayView = ({
   // Core game state
   realPosition,
@@ -99,7 +88,9 @@ const GameplayView = ({
       {/* Street View Container */}
       <div className='streetview-fullscreen'>
         {overlayContent ? (
-          <div className='overlay-message'>{overlayContent}</div>
+          <div className='overlay-message'>
+            <RoundLimitReached />
+          </div>
         ) : (
           <>
             <StreetView position={realPosition} loading={loading} />

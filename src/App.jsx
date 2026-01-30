@@ -10,6 +10,7 @@ import { LanguageProvider, useTranslation } from './hooks/useTranslation';
 import GamePage from './pages/GamePage';
 import MultiplayerPage from './pages/MultiplayerPage';
 import './App.css';
+import StartScreen from './pages/StartScreen';
 
 const libraries = ['places'];
 
@@ -56,7 +57,7 @@ function App() {
                 <Route path='/game' element={<GamePage />} />
                 <Route path='/multiplayer' element={<MultiplayerPage />} />
                 <Route path='/multiplayer/:roomCode' element={<MultiplayerPage />} />
-                <Route path='/' element={<Navigate to='/game' replace />} />
+                <Route path='/' element={<StartScreen />} />
               </Routes>
             </div>
           </LoadScript>

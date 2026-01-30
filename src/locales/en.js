@@ -14,23 +14,24 @@ export default {
   // Messages
   timeout: '⏰ Time out!',
   roundLimitTitle: 'Free rounds limit reached!',
-  roundLimitMessage: 'You played 5 rounds today. Come back tomorrow to continue playing!',
+  roundLimitMessage:
+    'You played 5 rounds today. Come back tomorrow to continue playing!',
   roundLimitReset: 'Your rounds reset automatically every day at 00:00',
-  
+
   // Feedback
   distance: 'Distance',
   score: 'Score',
-  
+
   // Last Guesses
   lastGuesses: 'Last guesses',
   noGuesses: 'No guesses yet',
   viewHistory: 'View history',
   hideHistory: 'Hide history',
-  
+
   // API Key Error (App.jsx)
   apiKeyError: 'Add your Google Maps key in a file',
   apiKeyWith: 'with:',
-  
+
   // Attempts Counter (AttemptsCounter.jsx)
   noAttemptsLeft: 'No attempts left',
   attempt: 'attempt',
@@ -38,24 +39,24 @@ export default {
   remaining: 'remaining',
   remainingPlural: 'remaining',
   guestMode: '(guest mode)',
-  
+
   // Dark Mode Toggle (DarkModeToggle.jsx)
   enableLightMode: 'Enable light mode',
   enableDarkMode: 'Enable dark mode',
   lightMode: 'Light mode',
   darkMode: 'Dark mode',
-  
+
   // Guess Feedback (GuessFeedback.jsx)
   perfect: '🎯 Perfect! Bulls-eye!',
   excellent: '🌟 Excellent! Very close!',
   veryGood: '👏 Very good! Good work!',
-  good: '👍 Good! You\'re on the right track!',
+  good: "👍 Good! You're on the right track!",
   fair: '😐 Fair. You can improve!',
   weak: '😕 Weak. Try to get closer!',
   veryFar: '😢 Very far! Try again!',
   distanceBetweenPoints: 'Distance between points:',
   scoreLabel: 'Score:',
-  
+
   // Guess History (GuessHistory.jsx)
   perfectShort: 'Perfect!',
   excellentShort: 'Excellent',
@@ -68,11 +69,11 @@ export default {
   pointsLabel: 'Points:',
   guessLabel: 'Guess:',
   realLabel: 'Real:',
-  
+
   // Language Toggle (LanguageToggle.jsx)
   switchToEnglish: 'Switch to English',
   switchToPortuguese: 'Switch to Portuguese',
-  
+
   // Street View (StreetView.jsx)
   generatingRandomPoint: 'Generating a random point...',
   loadingStreetView: 'Loading Street View. Please wait a moment.',
@@ -94,17 +95,24 @@ export default {
 
   // How to Play
   howToPlayTitle: 'How to Play',
-  howToPlayIntro: 'Welcome to Mapin! Your objective is to identify the location shown in the Street View.',
+  howToPlayIntro:
+    'Welcome to Mapin! Your objective is to identify the location shown in the Street View.',
   howToPlayStep1Title: '1️⃣ Observe',
-  howToPlayStep1Desc: 'Carefully examine the Street View image. Look for landmarks, signs, architecture, vegetation, and any visual clues.',
+  howToPlayStep1Desc:
+    'Carefully examine the Street View image. Look for landmarks, signs, architecture, vegetation, and any visual clues.',
   howToPlayStep2Title: '2️⃣ Analyze',
-  howToPlayStep2Desc: 'Use the available clues to narrow down the possible location. Think about the country, region, or city.',
+  howToPlayStep2Desc:
+    'Use the available clues to narrow down the possible location. Think about the country, region, or city.',
   howToPlayStep3Title: '3️⃣ Mark',
-  howToPlayStep3Desc: 'Click on the map where you think the location is. Be as precise as possible.',
+  howToPlayStep3Desc:
+    'Click on the map where you think the location is. Be as precise as possible.',
   howToPlayStep4Title: '4️⃣ Confirm',
-  howToPlayStep4Desc: 'Click "It\'s here!" to submit your guess before time runs out (75 seconds).',
-  howToPlayScoring: '🎯 Scoring: The closer your guess, the higher your score! Perfect guesses earn maximum points.',
-  howToPlayTips: '💡 Tips: Pay attention to language on signs, vehicle types, landscape, and architectural style.',
+  howToPlayStep4Desc:
+    'Click "It\'s here!" to submit your guess before time runs out (75 seconds).',
+  howToPlayScoring:
+    '🎯 Scoring: The closer your guess, the higher your score! Perfect guesses earn maximum points.',
+  howToPlayTips:
+    '💡 Tips: Pay attention to language on signs, vehicle types, landscape, and architectural style.',
 
   // Onboarding
   onboarding1: 'You woke up.',
@@ -121,4 +129,67 @@ export default {
   onboarding12: 'If you make a mistake…',
   onboarding13: 'the rescue will not happen.',
   onboardingCTA: 'Where are you?',
+
+  multiplayer_multiplayerMode: 'Multiplayer Mode',
+  multiplayer_createRoom: 'Create New Room',
+  multiplayer_joinRoom: 'Join Room',
+  multiplayer_description: 'Play with your friends in real time',
+
+  buttons_createRoom: 'Create Room',
+  buttons_joinRoom: 'Join Room',
+  buttons_back: '← Back',
+  buttons_creating: 'Creating...',
+  buttons_entering: 'Joining...',
+
+  labels_playerName: 'Your Name',
+  labels_roomCode: 'Room Code',
+  labels_duration: 'Round Duration',
+
+  placeholders_playerName: 'Enter your name',
+  placeholders_roomCode: 'Ex: ABC123',
+
+  durationOptions_oneMinute: '1 minute',
+  durationOptions_twoMinutes: '2 minutes',
+  durationOptions_threeMinutes: '3 minutes',
+  durationOptions_fiveMinutes: '5 minutes',
+
+  hints_roomCodeFromLink: 'Code automatically filled from the link',
+
+  errors_createRoom: 'Error creating room:',
+  errors_joinRoom: 'Error joining room:',
+
+  finalResults_title: 'Final Results',
+  finalResults_yourPosition: 'Your Position',
+  finalResults_position: 'Position',
+  finalResults_positionSuffix: 'th place',
+  playAgain: 'Play Again',
+  leaveRoom: 'Leave',
+  leaveRoom2: 'Leave Room',
+  finalResults_subtitle: 'Legend',
+  finalResults_realLocation: 'Real Location',
+  finalResults_players: 'players',
+  finalResults_players_capital: 'Players',
+  finalResults_ranking: 'Ranking',
+  finalResults_you: 'You',
+  finalResults_winner: 'Winner!',
+  finalResults_noParticipants: 'Did not participate:',
+
+  ranking_resultadoFinal: 'Final Result',
+  ranking_room: 'Room',
+  ranking_fullRanking: 'Full Ranking',
+
+  guess: 'guesses',
+  guessFeedback_sent: 'Guess sent!',
+  waitingForOtherPlayers: 'Waiting for other players...',
+  waitingRoom: 'Waiting Room',
+
+  linkCopied: 'Link copied!',
+  copyRoomLink: 'Copy room link',
+  shareLinkWithFriends: 'Share the link or code with your friends',
+  creator: 'Creator',
+
+  buttons_initiating: 'Starting...',
+  buttons_startGame: 'Start Game',
+  waitingForCreatorToStart: 'Waiting for the creator to start the game...',
+  waitingForMorePlayers: 'Waiting for more players to start...',
 };

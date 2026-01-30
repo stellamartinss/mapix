@@ -294,6 +294,22 @@
   min-height: 70px;
 }
 
+.game-info-bar_transparent {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 20px;
+  background: ltransparent;
+  backdrop-filter: blur(8px);
+  z-index: 900;
+  gap: 16px;
+  min-height: 70px;
+}
+
 .game-info-left {
   display: flex;
   align-items: center;
